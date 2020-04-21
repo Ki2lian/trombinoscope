@@ -92,7 +92,7 @@ if (isset($_POST["form-inscription"])) {
 											if ($mdp == $mdp2) {
 
 												$fichier = fopen("bd.csv", "a+");
-												fputs($fichier, $i+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $numero . ";" . $filiere . ";" . $groupe . ";" . $mdp . "\n");
+												fputs($fichier, $i+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . "\n");
 												fclose($fichier);
 												$inscriptionOK = "Votre compte a été crée, vous allez être redirigé à la page de connexion dans 5 secondes";
 												header('refresh:5;url=connexion.php');
@@ -298,7 +298,7 @@ téléphone, adresse, filière, groupe et photo -->
 
 					<option selected="" disabled="">Choisir un groupe</option>
 					<option value="A1">A1</option>
-					<option value="B2">B2</option> 
+					<option value="B2">B2</option>
 					<option value="LPI-1">LPI-1</option>
 					<option value="LPI-2">LPI-2</option>
 					<option value="LPI-3">LPI-3</option>
@@ -314,14 +314,12 @@ téléphone, adresse, filière, groupe et photo -->
 			</td>
 			<td>
 				<img id="eyes_mdp1" style="padding-right: 5px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
-				<!-- <input title="Voir le mot de passe" onclick="showPassword('mdp')" type="button" name="showpassword" value="Voir le mot de passe"/> -->
 			</td>
 			<td>
 				<input title="Votre mot de passe de confirmation doit contenir au minimum 8 caractères" type="password" placeholder="Mot de passe de confirmation" id="mdp2" name="mdp2" required="required" aria-required="true" minlength="8" />
 			</td>
 			<td>
 				<img id="eyes_mdp2" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp2'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
-				<!-- <input title="Voir le mot de passe" onclick="showPassword('mdp2')" type="button" name="showpassword" value="Voir le mot de passe"/> -->
 			</td>
 		</tr>
 	</table>

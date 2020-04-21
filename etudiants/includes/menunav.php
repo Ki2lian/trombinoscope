@@ -6,12 +6,12 @@
 <?php
     if (!isset($_SESSION["nom"])) {
         ?>
-        <li class="menu"><a href="#">Connexion</a>
+        <li class="menu"><a href="connexion.php">Connexion</a>
         </li>
         <?php
     }else{
     ?>
-        <li class="menu"><a href="#">Déconnexion</a>
+        <li class="menu"><a href="deconnexion.php">Déconnexion</a>
         </li>
     <?php } ?>
     </ul>
