@@ -298,7 +298,7 @@ téléphone, adresse, filière, groupe et photo -->
 
 					<option selected="" disabled="">Choisir un groupe</option>
 					<option value="A1">A1</option>
-					<option value="B2">B2</option>
+					<option value="B2">B2</option> 
 					<option value="LPI-1">LPI-1</option>
 					<option value="LPI-2">LPI-2</option>
 					<option value="LPI-3">LPI-3</option>
