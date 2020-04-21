@@ -114,11 +114,8 @@ if (isset($_POST["form-inscription"])) {
 		$erreur = "Tous les champs doivent être complétés.";}
 }
 ?>
-
 <?php
-if (!isset($_SESSION["nom"])) {
-	?>
-
+if (!isset($_SESSION["nom"])) {?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -328,18 +325,20 @@ téléphone, adresse, filière, groupe et photo -->
 </form>
 <?php
 if (isset($erreur)) {
-	echo "<font color='#eb2f06' style=\"font-weight: bold;\">". $erreur . "</font>";
+	echo "<div class='error'>\n";
+	echo "<font color='#eb2f06' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
+	echo "</div>\n";
 }
 ?>
 <?php
 if (isset($inscriptionOK)) {
-	echo "<font color='green' style=\"font-weight: bold;\">". $inscriptionOK . "</font>";
+	echo "<font color='green' style=\"font-weight: bold;\">". $inscriptionOK . "</font>\n";
 }
 ?>
 </div>
 <?php
 }else{
-	header("Location: index.php");
+	header("Location: profil.php");
 }
 ?>
 <script src="js/script.js"></script>

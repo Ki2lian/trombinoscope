@@ -10,7 +10,7 @@ if (isset($_POST["form-connexion"])) {
 
 			$lignes = file("bd.csv");
 
-			for ($i=0; $i < sizeof($lignes) ; $i++) { 
+			for ($i=0; $i < sizeof($lignes) ; $i++) {
 				$ligne = $lignes[$i];
 				$ligne = str_replace("\n", "", $ligne);
 
@@ -19,11 +19,12 @@ if (isset($_POST["form-connexion"])) {
 
 				if ($tableau[3] == $mail) {
 					$continueToMdp = True;
-					$erreur = "";
+					//$erreur = "";
 					break;
 				}else{
-					$erreur = "Le pseudo ou le mot de passe est incorrect !";
+					$erreur = "L'email ou le mot de passe est incorrect !";
 					$continueToMdp = False;
+					break;
 				}
 			}
 
@@ -34,11 +35,12 @@ if (isset($_POST["form-connexion"])) {
 
 					if ($tableau[7] == $mdp) {
 						$continueToLogin = True;
-						$erreur = "";
+						//$erreur = "";
 						break;
 					}else{
-						$erreur = "Le pseudo ou le mot de passe est incorrect !";
+						$erreur = "L'email ou le mot de passe est incorrect.";
 						$continueToLogin = False;
+						break;
 					}
 				}
 				if ($continueToLogin == True) {
@@ -59,11 +61,8 @@ if (isset($_POST["form-connexion"])) {
 }
 
 ?>
-
 <?php
-if (!isset($_SESSION["nom"])) {
-	?>
-
+if (!isset($_SESSION["nom"])) {?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -93,12 +92,13 @@ if (!isset($_SESSION["nom"])) {
 				</td>
 			</tr>
 		</table>
-
 		<input class="submit-form" type="submit" value="Se connecter" name="form-connexion" />
 	</form>
 <?php
 if (isset($erreur)) {
-	echo "<font color='#eb2f06'>". $erreur . "</font>";
+	echo "<div class='error'>\n";
+	echo "<font color='#eb2f06' style=\"font-weight: bold;margin-left: 24%; font-size: 18px;\">". $erreur . "</font>\n";
+	echo "</div>\n";
 }
 ?>
 </div>

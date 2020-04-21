@@ -119,6 +119,10 @@ td > input{
 	margin-left: 25%;
 }
 
+.error{
+	padding: 5%;
+}
+
 select{
 	-webkit-appearance:none;
 	-moz-appearance:none;
