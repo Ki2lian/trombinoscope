@@ -1,4 +1,4 @@
-<?php session_start();
+<?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
 if (isset($_POST["form-connexion"])) {
 	$mail = htmlspecialchars($_POST["mail"]);
 	$mdp = hash("sha256", $_POST["mdp"]);
@@ -19,12 +19,10 @@ if (isset($_POST["form-connexion"])) {
 
 				if ($tableau[3] == $mail) {
 					$continueToMdp = True;
-					//$erreur = "";
 					break;
 				}else{
 					$erreur = "L'email ou le mot de passe est incorrect !";
 					$continueToMdp = False;
-					break;
 				}
 			}
 
@@ -35,12 +33,10 @@ if (isset($_POST["form-connexion"])) {
 
 					if ($tableau[7] == $mdp) {
 						$continueToLogin = True;
-						//$erreur = "";
 						break;
 					}else{
 						$erreur = "L'email ou le mot de passe est incorrect.";
 						$continueToLogin = False;
-						break;
 					}
 				}
 				if ($continueToLogin == True) {
@@ -51,6 +47,8 @@ if (isset($_POST["form-connexion"])) {
 					$_SESSION["numero"] = $tableau[4];
 					$_SESSION["filiere"] = $tableau[5];
 					$_SESSION["groupe"] = $tableau[6];
+					$_SESSION["img-profil"] = $tableau[8];
+					$_SESSION["date"] = $tableau[9];
 					header("Location: index.php");
 				}
 			}

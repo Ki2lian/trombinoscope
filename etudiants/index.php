@@ -9,6 +9,7 @@ if (isset($_POST["form-inscription"])) {
 	$groupe = $_POST["groupe"];
 	$mdp = hash("sha256", $_POST["mdp"]);
 	$mdp2 = hash("sha256", $_POST["mdp2"]);
+	$img = "defaut.png";
 	$continueToMail = True;
 	$continueToNum = True;
 	$continueToMdp = True;
@@ -85,6 +86,24 @@ if (isset($_POST["form-inscription"])) {
 									$meta_carac = array("-", ".", " ");
 									$telephone = str_replace($meta_carac, "", $telephone);
 
+									$nbrLignes = file("bd.csv");
+									$fichier = fopen("bd.csv", "r+");
+
+									for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
+										$ligne = fgets($fichier);
+										$tableau = explode(";", $ligne);
+
+
+										if ($tableau[4] == $telephone) {
+											$erreur = "$telephone a déjà été utilisé, $contactAdmin.";
+											$continueToMdp = False;
+											$telephone = "";
+											break;
+										}
+									}
+
+
+
 									if ($continueToMdp == True) {
 
 										if (strlen($_POST["mdp"]) >= 8 || strlen($_POST["mdp2"]) >= 8 && $continueToMdp = True) {
@@ -92,7 +111,7 @@ if (isset($_POST["form-inscription"])) {
 											if ($mdp == $mdp2) {
 
 												$fichier = fopen("bd.csv", "a+");
-												fputs($fichier, $i+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . "\n");
+												fputs($fichier, $i+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . "\n");
 												fclose($fichier);
 												$inscriptionOK = "Votre compte a été crée, vous allez être redirigé à la page de connexion dans 5 secondes";
 												header('refresh:5;url=connexion.php');
@@ -129,9 +148,6 @@ if (!isset($_SESSION["nom"])) {?>
   <?php include "includes/menunav.php" ?>
 </header>
 
-<!-- Nom, prénom, email,
-téléphone, adresse, filière, groupe et photo -->
-
 <div class="formulaire">
 <form method="post">
 	<table>
@@ -157,7 +173,7 @@ téléphone, adresse, filière, groupe et photo -->
 		</tr>
 		<tr>
 			<td>
-				<input title="Votre numéro de téléphone portable" type="text" placeholder="Numéro de téléphone portable" id="numero" name="numero" required="required" aria-required="true" value="<?php if(isset($_POST["numero"])){echo($_POST["numero"]);} ?>" pattern="0[1-68]([-. ]?[0-9]{2}){4}"/>
+				<input title="Votre numéro de téléphone portable" type="text" placeholder="Numéro de téléphone portable" id="numero" name="numero" required="required" aria-required="true" value="<?php if(isset($_POST["numero"]) && $telephone != ""){echo($_POST["numero"]);} ?>" pattern="0[1-68]([-. ]?[0-9]{2}){4}"/>
 			</td>
 		</tr>
 		<tr>
@@ -332,7 +348,9 @@ if (isset($erreur)) {
 ?>
 <?php
 if (isset($inscriptionOK)) {
+	echo "<div class='inscriptionOK'>\n";
 	echo "<font color='green' style=\"font-weight: bold;\">". $inscriptionOK . "</font>\n";
+	echo "</div>\n";
 }
 ?>
 </div>
