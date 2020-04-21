@@ -10,14 +10,16 @@ if (isset($_POST["form-inscription"])) {
 	$mdp = hash("sha256", $_POST["mdp"]);
 	$mdp2 = hash("sha256", $_POST["mdp2"]);
 	$img = "defaut.png";
+	$anniv = $_POST["anniv"];
 	$continueToMail = True;
 	$continueToNum = True;
+	$continueToAnniv = True;
 	$continueToMdp = True;
 	$contactAdmin = "si vous pensez que c'est une erreur, merci de contacter l'administrateur";
 
 
 	function verifName($lname, $fname){
-		$lignes = file("bd.csv");
+		$lignes = file("db.csv");
 		for ($i=0; $i < sizeof($lignes) ; $i++) {
 			$ligne = $lignes[$i];
 			$ligne = str_replace("\n", "", $ligne);
@@ -32,15 +34,15 @@ if (isset($_POST["form-inscription"])) {
 		}
 	}
 
-	if (!empty($_POST["nom"]) && !empty($_POST["prenom"]) && !empty($_POST["mail"]) && !empty($_POST["mail2"]) && !empty($_POST["numero"]) && !empty($_POST["mdp"]) && !empty($_POST["mdp2"]) && !empty($_POST["filiere"]) && !empty($_POST["groupe"]))  {
+	if (!empty($_POST["nom"]) && !empty($_POST["prenom"]) && !empty($_POST["mail"]) && !empty($_POST["mail2"]) && !empty($_POST["numero"]) && !empty($_POST["mdp"]) && !empty($_POST["mdp2"]) && !empty($_POST["filiere"]) && !empty($_POST["groupe"]) && !empty($_POST["anniv"]))  {
 
-		if (preg_match('#^[a-zA-Z0-9]*$#', $_POST['nom'])) {
-
-
-			if (preg_match('#^[a-zA-Z0-9]*$#', $_POST['prenom'])) {
+		if (preg_match('#^[a-zA-Z]*$#', $_POST['nom'])) {
 
 
-				$lignes = file("bd.csv");
+			if (preg_match('#^[a-zA-Z]*$#', $_POST['prenom'])) {
+
+
+				$lignes = file("db.csv");
 				for ($i=0; $i < sizeof($lignes) ; $i++) {
 					$ligne = $lignes[$i];
 					$ligne = str_replace("\n", "", $ligne);
@@ -61,8 +63,8 @@ if (isset($_POST["form-inscription"])) {
 
 						if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
 
-							$nbrLignes = file("bd.csv");
-							$fichier = fopen("bd.csv", "r+");
+							$nbrLignes = file("db.csv");
+							$fichier = fopen("db.csv", "r+");
 
 							for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
 								$ligne = fgets($fichier);
@@ -86,8 +88,8 @@ if (isset($_POST["form-inscription"])) {
 									$meta_carac = array("-", ".", " ");
 									$telephone = str_replace($meta_carac, "", $telephone);
 
-									$nbrLignes = file("bd.csv");
-									$fichier = fopen("bd.csv", "r+");
+									$nbrLignes = file("db.csv");
+									$fichier = fopen("db.csv", "r+");
 
 									for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
 										$ligne = fgets($fichier);
@@ -102,23 +104,40 @@ if (isset($_POST["form-inscription"])) {
 										}
 									}
 
+									if ($continueToAnniv == True) {
+										if (preg_match('#^([0-9]{4})([-])([0-9]{2})\2([0-9]{2})$#', $anniv, $m) == 1 && checkdate($m[3], $m[4], $m[1])){
+										
+											$tableau = explode("-", $anniv);
+											$anniv = mktime(12, 0, 0, $tableau[1], $tableau[2], $tableau[0]);
+										}else{
+											$erreur = "Il y a un problème avec la date de naissance.";
+											$continueToMdp = False;
+										}
 
 
-									if ($continueToMdp == True) {
+										if ($continueToMdp == True) {
+											
+											if (strlen($_POST["mdp"]) >= 8 || strlen($_POST["mdp2"]) >= 8) {
 
-										if (strlen($_POST["mdp"]) >= 8 || strlen($_POST["mdp2"]) >= 8 && $continueToMdp = True) {
+												if ($mdp == $mdp2) {
 
-											if ($mdp == $mdp2) {
+													$key = "";
+													for ($random=0; $random < 16; $random++) { 
+														$key .= mt_rand(0,9);
+													}
 
-												$fichier = fopen("bd.csv", "a+");
-												fputs($fichier, $i+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . "\n");
-												fclose($fichier);
-												$inscriptionOK = "Votre compte a été crée, vous allez être redirigé à la page de connexion dans 5 secondes";
-												header('refresh:5;url=connexion.php');
+													$fichier = fopen("db.csv", "a+");
+													fputs($fichier, $i+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";0" . "\n");
+													fclose($fichier);
+													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". $key ."'
+													";
+													mail($mail, "Confirmation d'inscription", $message);
+
+													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";
 								}else{
 									$erreur = "Les mots de passe ne correspondent pas.";}
 							}else{
-								$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}}
+								$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}}}
 						}else{
 							$erreur = "$telephone n'est pas un numéro valide."; $continueToMdp = False;}}
 					}else{
@@ -126,9 +145,9 @@ if (isset($_POST["form-inscription"])) {
 				}else{
 					$erreur = "Les adresses email ne correspondent pas.";}}
 			}else{
-				$erreur = "Le prénom ne peut pas avoir de caractères spéciaux.";}
+				$erreur = "Le prénom ne peut pas avoir de caractères spéciaux ou de chiffres.";}
 		}else{
-			$erreur = "Le nom ne peut pas avoir de caractères spéciaux.";}
+			$erreur = "Le nom ne peut pas avoir de caractères spéciaux ou de chiffres.";}
 	}else{
 		$erreur = "Tous les champs doivent être complétés.";}
 }
@@ -174,6 +193,11 @@ if (!isset($_SESSION["nom"])) {?>
 		<tr>
 			<td>
 				<input title="Votre numéro de téléphone portable" type="text" placeholder="Numéro de téléphone portable" id="numero" name="numero" required="required" aria-required="true" value="<?php if(isset($_POST["numero"]) && $telephone != ""){echo($_POST["numero"]);} ?>" pattern="0[1-68]([-. ]?[0-9]{2}){4}"/>
+			</td>
+			<td>
+				<td>
+				<input title="Date de naissance" type="date" value="<?php if(isset($_POST["anniv"])){ echo($_POST["anniv"]); } ?>" name="anniv" required="required" aria-required="true"/>
+				</td>
 			</td>
 		</tr>
 		<tr>

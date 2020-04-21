@@ -1,5 +1,5 @@
 <?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
-if (isset($_POST["form-connexion"])) {
+/*if (isset($_POST["form-connexion"])) {
 	$mail = htmlspecialchars($_POST["mail"]);
 	$mdp = hash("sha256", $_POST["mdp"]);
 
@@ -8,7 +8,7 @@ if (isset($_POST["form-connexion"])) {
 		if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
 
 
-			$lignes = file("bd.csv");
+			$lignes = file("db.csv");
 
 			for ($i=0; $i < sizeof($lignes) ; $i++) {
 				$ligne = $lignes[$i];
@@ -47,8 +47,9 @@ if (isset($_POST["form-connexion"])) {
 					$_SESSION["numero"] = $tableau[4];
 					$_SESSION["filiere"] = $tableau[5];
 					$_SESSION["groupe"] = $tableau[6];
-					$_SESSION["img-profil"] = $tableau[8];
+					$_SESSION["avatar"] = $tableau[8];
 					$_SESSION["date"] = $tableau[9];
+					$_SESSION["anniv"] = $tableau[10];
 					header("Location: index.php");
 				}
 			}
@@ -56,7 +57,10 @@ if (isset($_POST["form-connexion"])) {
 			$erreur = "L'adresse email n'est pas valide.";}
 	}else{
 		$erreur = "Tous les champs doivent être complétés.";}
-}
+}*/
+
+
+// VERIFIER SI LE COMPTE EST VALIDE POUR POUVOIR POURSUIVRE !
 
 ?>
 <?php

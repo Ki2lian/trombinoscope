@@ -1,7 +1,7 @@
 <?php  setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
 if(isset($_SESSION["id"])){
 	$pseudo = "Bienvenue sur votre profil " . $_SESSION["nom"] . " " . $_SESSION["prenom"];
-	$img = $_SESSION["img-profil"];
+	$img = $_SESSION["avatar"];
 	$date = $_SESSION["date"];
 }
 
@@ -22,8 +22,22 @@ if (isset($_SESSION["nom"])) {?>
 </header>
 
 <h2><?php echo $pseudo; ?></h2>
+<!-- <p>Votre compte a été crée le <?php echo strftime("%e %B %Y", $date) ?></p> -->
+<!--<p>Date d'anniv: <?php echo strftime("%e/%m/%Y", $_SESSION["anniv"]); ?></p> -->
+<?php
+
+if ($img != "defaut.png") {
+?>
+<img class="img-profil" src="img/profil/<?php echo $img; ?>" />
+<?php
+}else{
+?>
 <img class="img-profil" src="img/profil/<?php echo $img; ?>">
-<p>Votre compte a été crée le <?php echo strftime("%e %B %Y", $date) ?></p>
+<?php
+}
+
+?>
+
 
 </body>
 </html>
