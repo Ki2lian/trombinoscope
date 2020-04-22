@@ -1,4 +1,6 @@
 <?php
+
+// Fonctions pour la page index.php (inscription)
 function randomKey($length=20){
 	$chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	$string = '';
@@ -77,4 +79,6 @@ function getID($db){
 	}
 	return $id;
 }
+
+// Fonctions pour la connexion
 ?>
