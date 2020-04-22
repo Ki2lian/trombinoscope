@@ -43,7 +43,8 @@ if (isset($_POST["form-inscription"])) {
 
 												if ($mdp == $mdp2) {
 													$fichier = fopen($db, "a+");
-													fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";0" . "\n");
+													//fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";0" . "\n");
+													fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
 													fclose($fichier);
 													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". urlencode($key) ."'
 													";
