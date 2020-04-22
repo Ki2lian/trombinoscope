@@ -1,5 +1,10 @@
 <?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
 if (isset($_POST["form-inscription"])) {
+	include("config/function.php");
+	$db = "db.csv";
+	$key = randomKey(32);
+	$id = getID($db);
+
 	$nom = htmlspecialchars($_POST["nom"]);
 	$prenom = htmlspecialchars($_POST["prenom"]);
 	$mail = htmlspecialchars($_POST["mail"]);
@@ -7,144 +12,65 @@ if (isset($_POST["form-inscription"])) {
 	$telephone = $_POST["numero"];
 	$filiere = $_POST["filiere"];
 	$groupe = $_POST["groupe"];
-	$mdp = hash("sha256", $_POST["mdp"]);
-	$mdp2 = hash("sha256", $_POST["mdp2"]);
+	$mdp = hash("sha256", $_POST["mdp"] . $key);
+	$mdp2 = hash("sha256", $_POST["mdp2"] . $key);
 	$img = "defaut.png";
 	$anniv = $_POST["anniv"];
-	$continueToMail = True;
-	$continueToNum = True;
-	$continueToAnniv = True;
-	$continueToMdp = True;
 	$contactAdmin = "si vous pensez que c'est une erreur, merci de contacter l'administrateur";
 
 
-	function verifName($lname, $fname){
-		$lignes = file("db.csv");
-		for ($i=0; $i < sizeof($lignes) ; $i++) {
-			$ligne = $lignes[$i];
-			$ligne = str_replace("\n", "", $ligne);
-
-			$tableau = explode(";", $ligne);
-
-
-			if ($tableau[1] == $lname && $tableau[2] == $fname) {
-				$erreur = "Le nom a déjà été utilisé.";
-				$continueToMail = False;
-			}
-		}
-	}
-
 	if (!empty($_POST["nom"]) && !empty($_POST["prenom"]) && !empty($_POST["mail"]) && !empty($_POST["mail2"]) && !empty($_POST["numero"]) && !empty($_POST["mdp"]) && !empty($_POST["mdp2"]) && !empty($_POST["filiere"]) && !empty($_POST["groupe"]) && !empty($_POST["anniv"]))  {
 
-		if (preg_match('#^[a-zA-Z]*$#', $_POST['nom'])) {
+		if (preg_match('#^[a-zA-Z]*$#', $nom)) {
 
+			if (preg_match('#^[a-zA-Z]*$#', $prenom)) {
 
-			if (preg_match('#^[a-zA-Z]*$#', $_POST['prenom'])) {
-
-
-				$lignes = file("db.csv");
-				for ($i=0; $i < sizeof($lignes) ; $i++) {
-					$ligne = $lignes[$i];
-					$ligne = str_replace("\n", "", $ligne);
-
-					$tableau = explode(";", $ligne);
-
-
-					if ($tableau[1] == $nom && $tableau[2] == $prenom) {
-						$erreur = "Le nom et prénom ont déjà été utilisé, $contactAdmin.";
-						$continueToMail = False;
-						break;
-					}
-				}
-
-				if ($continueToMail == True) {
+				if (verifName($db, $nom, $prenom) == True) {
 
 					if ($mail == $mail2) {
 
 						if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
 
-							$nbrLignes = file("db.csv");
-							$fichier = fopen("db.csv", "r+");
+							if (verifMail($db, $mail) == True) {
 
-							for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
-								$ligne = fgets($fichier);
-								$tableau = explode(";", $ligne);
-
-
-								if ($tableau[3] == $mail) {
-									$erreur = "L'adresse email a déjà été utilisée, $contactAdmin.";
-									$continueToNum = False;
-									break;
-								}
-							}
-
-							fclose($fichier);
-
-
-							if ($continueToNum == True) {
-
-								// https://www.1formatik.com/1760/comment-verifier-un-numero-de-telephone-portable-html5-php
 								if (preg_match("#^0[1-68]([-. ]?[0-9]{2}){4}$#", $telephone)){
-									$meta_carac = array("-", ".", " ");
-									$telephone = str_replace($meta_carac, "", $telephone);
 
-									$nbrLignes = file("db.csv");
-									$fichier = fopen("db.csv", "r+");
+									if (verifNum($db, $telephone) == True) {
 
-									for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
-										$ligne = fgets($fichier);
-										$tableau = explode(";", $ligne);
+										if (verifDateAnniv($anniv) != False) {
+											$anniv = verifDateAnniv($anniv);
 
-
-										if ($tableau[4] == $telephone) {
-											$erreur = "$telephone a déjà été utilisé, $contactAdmin.";
-											$continueToMdp = False;
-											$telephone = "";
-											break;
-										}
-									}
-
-									if ($continueToAnniv == True) {
-										if (preg_match('#^([0-9]{4})([-])([0-9]{2})\2([0-9]{2})$#', $anniv, $m) == 1 && checkdate($m[3], $m[4], $m[1])){
-										
-											$tableau = explode("-", $anniv);
-											$anniv = mktime(12, 0, 0, $tableau[1], $tableau[2], $tableau[0]);
-										}else{
-											$erreur = "Il y a un problème avec la date de naissance.";
-											$continueToMdp = False;
-										}
-
-
-										if ($continueToMdp == True) {
-											
 											if (strlen($_POST["mdp"]) >= 8 || strlen($_POST["mdp2"]) >= 8) {
 
 												if ($mdp == $mdp2) {
-
-													$key = "";
-													for ($random=0; $random < 16; $random++) { 
-														$key .= mt_rand(0,9);
-													}
-
-													$fichier = fopen("db.csv", "a+");
-													fputs($fichier, $i+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";0" . "\n");
+													$fichier = fopen($db, "a+");
+													fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";0" . "\n");
 													fclose($fichier);
-													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". $key ."'
+													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". urlencode($key) ."'
 													";
 													/*mail($mail, "Confirmation d'inscription", $message);
 
 													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";*/
 													$inscriptionOK = "Votre compte a été crée avec succès.";
+
+												}else{
+													$erreur = "Les mots de passe ne correspondent pas.";}
+											}else{
+												$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}
+										}else{
+											$erreur = "Il y a un problème avec la date de naissance.";}
+									}else{
+										$erreur = "$telephone a déjà été utilisé, $contactAdmin.";}
 								}else{
-									$erreur = "Les mots de passe ne correspondent pas.";}
+									$erreur = "$telephone n'est pas un numéro valide.";}
 							}else{
-								$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}}}
+								$erreur = "L'adresse email a déjà été utilisée, $contactAdmin.";}
 						}else{
-							$erreur = "$telephone n'est pas un numéro valide."; $continueToMdp = False;}}
+							$erreur = "L'adresse email n'est pas valide.";}
 					}else{
-						$erreur = "L'adresse email n'est pas valide.";}
+						$erreur = "Les adresses email ne correspondent pas.";}
 				}else{
-					$erreur = "Les adresses email ne correspondent pas.";}}
+					$erreur = "Le nom et prénom ont déjà été utilisé, $contactAdmin.";}
 			}else{
 				$erreur = "Le prénom ne peut pas avoir de caractères spéciaux ou de chiffres.";}
 		}else{
@@ -204,7 +130,6 @@ if (!isset($_SESSION["nom"])) {?>
 		<tr>
 			<td>
 				<select name="filiere">
-
 					<?php
 					if (isset($_POST["filiere"])) {
 						switch ($_POST["filiere"]) {

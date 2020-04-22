@@ -1,11 +1,10 @@
 <?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
 if (isset($_POST["form-connexion"])) {
 	$mail = htmlspecialchars($_POST["mail"]);
-	$mdp = hash("sha256", $_POST["mdp"]);
-
+	$mdp = htmlspecialchars($_POST["mdp"]);
 
 	// VERIFIER SI LE COMPTE EST VALIDE POUR POUVOIR POURSUIVRE !
-	
+
 	if (!empty($mail) && !empty($mdp)) {
 
 		if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
@@ -34,7 +33,7 @@ if (isset($_POST["form-connexion"])) {
 
 				for ($i=0; $i < sizeof($lignes) ; $i++) {
 
-					if ($tableau[7] == $mdp) {
+					if ($tableau[7] == hash("sha256", $mdp . $tableau[11])) {
 						$continueToLogin = True;
 						break;
 					}else{

@@ -3,7 +3,7 @@
 if (!isset($_SESSION["id"]) && isset($_GET["prenom"], $_GET["nom"], $_GET["key"]) && !empty($_GET["prenom"]) && !empty($_GET["nom"]) && !empty($_GET["key"]) ) {
 	$prenom = htmlspecialchars(urldecode($_GET["prenom"]));
 	$nom = htmlspecialchars(urldecode($_GET["nom"]));
-	$key = htmlspecialchars(intval($_GET["key"]));
+	$key = htmlspecialchars(urldecode($_GET["key"]));
 	$continueToVerif = True;
 
 
@@ -32,8 +32,10 @@ if (!isset($_SESSION["id"]) && isset($_GET["prenom"], $_GET["nom"], $_GET["key"]
 		}
 		$cValidate = "CONFIRMATION VALIDÉE";
 	}else{
-		$cEchec = "CONFIRMATION ÉCHOUÉE";
+		header("location: index.php");
 	}
+}else{
+	header("location: index.php");
 }
 
 ?>
