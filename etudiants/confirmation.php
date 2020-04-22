@@ -21,7 +21,6 @@ if (!isset($_SESSION["id"]) && isset($_GET["prenom"], $_GET["nom"], $_GET["key"]
 		    $stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . $lignes[7] . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $lignes[12];
 		}
 		array_push($tableauStock, $stockerLigne);
-		//print_r($tableauStock);
 	}
 
 	fclose($fichier);

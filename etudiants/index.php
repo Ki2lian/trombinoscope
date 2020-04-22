@@ -131,9 +131,10 @@ if (isset($_POST["form-inscription"])) {
 													fclose($fichier);
 													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". $key ."'
 													";
-													mail($mail, "Confirmation d'inscription", $message);
+													/*mail($mail, "Confirmation d'inscription", $message);
 
-													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";
+													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";*/
+													$inscriptionOK = "Votre compte a été crée avec succès.";
 								}else{
 									$erreur = "Les mots de passe ne correspondent pas.";}
 							}else{

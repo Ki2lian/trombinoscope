@@ -1,8 +1,11 @@
 <?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
-/*if (isset($_POST["form-connexion"])) {
+if (isset($_POST["form-connexion"])) {
 	$mail = htmlspecialchars($_POST["mail"]);
 	$mdp = hash("sha256", $_POST["mdp"]);
 
+
+	// VERIFIER SI LE COMPTE EST VALIDE POUR POUVOIR POURSUIVRE !
+	
 	if (!empty($mail) && !empty($mdp)) {
 
 		if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
@@ -57,10 +60,10 @@
 			$erreur = "L'adresse email n'est pas valide.";}
 	}else{
 		$erreur = "Tous les champs doivent être complétés.";}
-}*/
+}
 
 
-// VERIFIER SI LE COMPTE EST VALIDE POUR POUVOIR POURSUIVRE !
+
 
 ?>
 <?php
