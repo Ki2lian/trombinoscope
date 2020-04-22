@@ -23,6 +23,7 @@ if (isset($_POST["form-connexion"])) {
 					$_SESSION["avatar"] = $tableau[8];
 					$_SESSION["date"] = $tableau[9];
 					$_SESSION["anniv"] = $tableau[10];
+					writeLogs("logs/general.log", "$tableau[1] $tableau[2];s'est connecté");
 					header("Location: profil.php");
 				}else{
 					$erreur = "Vous devez vérifier votre compte en cliquant sur le lien sur votre email pour pouvoir vous connecter.";}

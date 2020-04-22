@@ -205,7 +205,13 @@ function changeAvatar(){
 	}
 }
 
-
+	// Écrit dans le fichier qu'on veut avec le message qu'on veut
+function writeLogs($fichier, $message){
+	$fichier = fopen($fichier, "a+");
+	$write = strftime("%e/%m/%Y à %T", time()) . ";" . mktime() . ";" . $message . "\n";
+	fputs($fichier, $write);
+	fclose($fichier);
+}
 
 
 ?>

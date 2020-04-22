@@ -48,6 +48,7 @@ if (isset($_POST["form-inscription"])) {
 													fclose($fichier);
 													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". urlencode($key) ."'
 													";
+													writeLogs("logs/general.log", "$nom $prenom;s'est inscrit");
 													/*mail($mail, "Confirmation d'inscription", $message);
 
 													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";*/
