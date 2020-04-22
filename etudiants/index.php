@@ -1,7 +1,6 @@
 <?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
 if (isset($_POST["form-inscription"])) {
 	include("config/function.php");
-	$db = "db.csv";
 	$key = randomKey(32);
 	$id = getID($db);
 

@@ -3,7 +3,6 @@ if (isset($_POST["form-connexion"])) {
 	include("config/function.php");
 	$mail = htmlspecialchars($_POST["mail"]);
 	$mdp = htmlspecialchars($_POST["mdp"]);
-	$db = "db.csv";
 
 	// VERIFIER SI LE COMPTE EST VALIDE POUR POUVOIR POURSUIVRE !
 

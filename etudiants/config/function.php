@@ -1,4 +1,6 @@
 <?php
+
+$db = "db.csv";
 // Fonctions pour la page index.php (inscription)
 function randomKey($length=20){
 	$chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -79,7 +81,7 @@ function getID($db){
 	return $id;
 }
 
-// Fonctions pour la connexion
+// Fonction pour la connexion
 
 function verifConnexion($db, $email, $password){
 	$lignes = file($db);
@@ -101,5 +103,37 @@ function verifConnexion($db, $email, $password){
 	}
 }
 
+
+// Fonction pour la confirmation du compte
+
+function VerifConfirmation($db, $nom, $prenom, $key){
+	$fichier = fopen($db, "r");
+	$valeur = 1;
+	$tableauStock = array();
+    while ($lignes = fgets($fichier)){
+	 	$lignes = explode(';', $lignes);
+		if ($lignes[1] == $nom && $lignes[2] == $prenom && $lignes[11] == $key && $lignes[12] != 1){
+			$validate = 1;
+
+			$stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . $lignes[7] . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $valeur . "\n";
+		}elseif ($lignes[1] == $nom && $lignes[2] == $prenom && $lignes[11] == $key && $lignes[12] == 1) {
+			return 3;
+		}else{
+		    $stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . $lignes[7] . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $lignes[12];
+		}
+		array_push($tableauStock, $stockerLigne);
+	}
+
+	fclose($fichier);
+	if ($validate == 1) {
+		$fichier = fopen($db, "w");
+		for ($i = 0; $i < sizeof($tableauStock); $i++){
+			 fputs($fichier, $tableauStock[$i]);
+		}
+		return 1;
+	}else{
+		return False;
+	}
+}
 
 ?>
