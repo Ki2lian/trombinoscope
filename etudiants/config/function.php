@@ -1,5 +1,4 @@
 <?php
-
 // Fonctions pour la page index.php (inscription)
 function randomKey($length=20){
 	$chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -81,4 +80,26 @@ function getID($db){
 }
 
 // Fonctions pour la connexion
+
+function verifConnexion($db, $email, $password){
+	$lignes = file($db);
+	$stockInformation = array();
+	for ($i=0; $i < sizeof($lignes) ; $i++) {
+		$ligne = $lignes[$i];
+		$ligne = str_replace("\n", "", $ligne);
+
+		$tableau = explode(";", $ligne);
+
+		if ($tableau[3] == $email && $tableau[7] == hash("sha256", $password . $tableau[11])) {
+			for ($i = 0; $i < 13; $i++){
+			 $stockInformation[$i] = $tableau[$i];
+			}
+			return $stockInformation;
+		}else{
+			return False;
+		}
+	}
+}
+
+
 ?>

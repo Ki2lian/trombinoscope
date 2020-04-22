@@ -1,7 +1,9 @@
 <?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
 if (isset($_POST["form-connexion"])) {
+	include("config/function.php");
 	$mail = htmlspecialchars($_POST["mail"]);
 	$mdp = htmlspecialchars($_POST["mdp"]);
+	$db = "db.csv";
 
 	// VERIFIER SI LE COMPTE EST VALIDE POUR POUVOIR POURSUIVRE !
 
@@ -9,39 +11,9 @@ if (isset($_POST["form-connexion"])) {
 
 		if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
 
-
-			$lignes = file("db.csv");
-
-			for ($i=0; $i < sizeof($lignes) ; $i++) {
-				$ligne = $lignes[$i];
-				$ligne = str_replace("\n", "", $ligne);
-
-				$tableau = explode(";", $ligne);
-
-
-				if ($tableau[3] == $mail) {
-					$continueToMdp = True;
-					break;
-				}else{
-					$erreur = "L'email ou le mot de passe est incorrect !";
-					$continueToMdp = False;
-				}
-			}
-
-
-			if ($continueToMdp == True) {
-
-				for ($i=0; $i < sizeof($lignes) ; $i++) {
-
-					if ($tableau[7] == hash("sha256", $mdp . $tableau[11])) {
-						$continueToLogin = True;
-						break;
-					}else{
-						$erreur = "L'email ou le mot de passe est incorrect.";
-						$continueToLogin = False;
-					}
-				}
-				if ($continueToLogin == True) {
+			if (verifConnexion($db, $mail, $mdp) != False) {
+				$tableau = verifConnexion($db, $mail, $mdp);
+				if ($tableau[12] == 1) {
 					$_SESSION["id"] = $tableau[0];
 					$_SESSION["nom"] = $tableau[1];
 					$_SESSION["prenom"] = $tableau[2];
@@ -52,18 +24,16 @@ if (isset($_POST["form-connexion"])) {
 					$_SESSION["avatar"] = $tableau[8];
 					$_SESSION["date"] = $tableau[9];
 					$_SESSION["anniv"] = $tableau[10];
-					header("Location: index.php");
-				}
-			}
+					header("Location: profil.php");
+				}else{
+					$erreur = "Vous devez vérifier votre compte en cliquant sur le lien sur votre email pour pouvoir vous connecter.";}
+			}else{
+				$erreur = "L'email ou le mot de passe est incorrect !";}
 		}else{
 			$erreur = "L'adresse email n'est pas valide.";}
 	}else{
 		$erreur = "Tous les champs doivent être complétés.";}
 }
-
-
-
-
 ?>
 <?php
 if (!isset($_SESSION["nom"])) {?>
@@ -108,7 +78,7 @@ if (isset($erreur)) {
 </div>
 <?php
 }else{
-	header("Location: index.php");
+	header("Location: profil.php");
 }
 ?>
 <script src="js/script.js"></script>
