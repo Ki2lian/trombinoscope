@@ -90,7 +90,7 @@ function getID($db){
 
 // Fonction pour la connexion
 
-	// Vérifie si l'email, le mot de passe sont valides et vérifie aussi si le compte est validé ou non
+	// Vérifie si l'email, le mot de passe sont valides
 function verifConnexion($db, $email, $password){
 	$lignes = file($db);
 	$stockInformation = array();
@@ -105,7 +105,7 @@ function verifConnexion($db, $email, $password){
 			 $stockInformation[$i] = $tableau[$i];
 			}
 			return $stockInformation;
-		}else{
+		}elseif($i == sizeof($lignes)-1){
 			return False;
 		}
 	}
