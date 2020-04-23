@@ -83,6 +83,9 @@ nav > ul > li:hover > a{
 	transition: 0.3s;
 }
 
+
+
+/* Styles concernant l'index et connexion */
 .formulaire{
 	margin-left: auto;
     margin-right: auto;
@@ -103,7 +106,7 @@ td > input{
   	font-size: 25px;
 }
 
-#mdp{
+#mdp, #mdp3{
 	width: 90%;
 }
 
@@ -117,21 +120,6 @@ td > input{
 
 .error, .inscriptionOK{
 	padding: 5%;
-}
-
-.img-profil{
-	width: 150px;
-	height: 150px;
-	position: absolute;
-    -webkit-box-shadow: 0 1px 0 2px rgba(0,0,0,.3);
-    box-shadow: 0 1px 0 2px rgba(0,0,0,.3);
-    background-color: #02353c;
-    border: 2px solid #267b91;
-    border-radius: 50%;
-    width: 88px;
-    z-index: 11;
-    height: 88px;
-    background-position: center 1px;
 }
 
 select{
@@ -172,14 +160,27 @@ select::-ms-expand{
 	color:#7ed6df;
 }
 
+/* Styles concernant la page de profil */
+.img-profil{
+	width: 150px;
+	height: 150px;
+	position: absolute;
+    -webkit-box-shadow: 0 1px 0 2px rgba(0,0,0,.3);
+    box-shadow: 0 1px 0 2px rgba(0,0,0,.3);
+    background-color: #02353c;
+    border: 2px solid #267b91;
+    border-radius: 50%;
+    z-index: 11;
+    background-position: center 1px;
+}
+
 .row{
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    margin-right: 50px;
-    /*margin-left: -5px;*/
+    margin-left: 30%;
 }
 
 .box{
@@ -194,17 +195,57 @@ select::-ms-expand{
     padding: 5px 1px 5px 57px;
     width: auto;
     position: relative;
-    border: dashed 1px #181818;
-    margin: 13px 1px 5px 51px;
+    border: dashed 1.2px #181818;
+    /*margin: 13px 1px 5px 51px;*/
+    margin: 13px 1px 5px 100px;
 }
 
 .profil_name {
-    font-size: 25px;
+    font-size: 30px;
     color: #30336b;
     text-shadow: 0 1px 2px #000;
     padding-left: 49px;
     padding: 0;
     margin: 0;
+}
+
+.profil_about {
+    display: block;
+    padding: 5px;
+    margin-left: 45%;
+}
+
+.col-md-4 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 33.3333333333%;
+    flex: 0 0 33.3333333333%;
+    max-width: 33.3333333333%;
+}
+
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 5px 7px;
+    border-radius: 2px;
+    font-size: 1.4em;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0,0,0,.3);
+    color: #fff;
+    -webkit-box-shadow: 2px 2px 0 0 rgba(0,0,0,.3);
+    box-shadow: 2px 2px 0 0 rgba(0,0,0,.3);
+    cursor: pointer;
+    margin-bottom: 5px;
+    background-color: #0f7dbc;
+    border: solid 2px #2a9cde;
+    -webkit-transition: background-color .2s;
+    -o-transition: background-color .2s;
+    transition: background-color .2s;
+}
+
+.btn:hover {
+    background-color: #128ed5;
 }
 /*
 footer {

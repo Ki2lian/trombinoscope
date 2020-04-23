@@ -26,7 +26,7 @@ if (isset($_SESSION["id"]) && $_SESSION["id"] == 1) {
 <?php
 if (isset($_POST["form-generate-account"])) {
 	$nombre = intval($_POST["nombre"]);
-	writeLogs("logs/general.log", "$nom $prenom;a généré $nombre compte(s).");
+	writeLogs("logs/general.log", "$nom $prenom;a généré $nombre compte(s)");
 	genereAccount("db.csv", $nombre);
 }
 if (isset($erreur)) {

@@ -13,8 +13,6 @@
     ?>
         <li class="menu"><a href="../profil.php">Mon profil</a>
         </li>
-        <li class="menu"><a href="../parametres/">Paramètres</a>
-        </li>
         <?php
         if ($_SESSION["id"] == 1) {
             ?>

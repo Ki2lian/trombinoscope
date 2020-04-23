@@ -242,10 +242,10 @@ function genereAccount($db, $nombre=20){
 			}
 			fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
 			echo "Le compte $nom $prenom a été créé.<br/>";
-			writeLogs("logs/general.log", "$nom $prenom;a été créé par l'administrateur.");
+			writeLogs("logs/general.log", "$nom $prenom;a été créé par l'administrateur");
 		}else{
 			echo "Le compte $nom $prenom existe déjà, il n'a pas pu être créé.<br/>";
-			writeLogs("logs/general.log", "$nom $prenom;le compte existe déjà, il n'a pas pu être crée.");
+			writeLogs("logs/general.log", "$nom $prenom;le compte existe déjà, il n'a pas pu être crée");
 		}
 	}
 	$fichier = fopen($db, "a+");
