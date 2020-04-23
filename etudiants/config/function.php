@@ -216,8 +216,8 @@ function writeLogs($fichier, $message){
 
 	// Création de comptes
 function genereAccount($db, $nombre=20){
-	$prenoms = array("William","Eugène","Arianne","Evrard","Madelene","Aurore","Marguerite","Philippine","Fabienne","Eustache","Senapus","Jean","Baptiste","Corette","Honore","Thomas","André","Benjamin","Rémy","Amaury","Aubin");
-	$noms = array("Arpin","Faubert","Guibord","Lapointe","Gougeon","Labelle","Givry","Lazure","Rodrigue","Bernard","Boivin","Daigle","Chalifour","Compagnon","Bisaillon","Noël","Trépanier","Gagnon","Bernier","Auberjonois","Louineaux");
+	$prenoms = array("William","Eugène","Arianne","Evrard","Madelene","Aurore","Marguerite","Philippine","Fabienne","Eustache","Senapus","Jean","Baptiste","Corette","Honore","Thomas","André","Benjamin","Rémy","Amaury","Aubin","Jeanne","Elena","Salomé","Clara","Léa","Emma","Marie","Lola","Sarah","Erwann","Adrien","Paul","Margot","Madisson","Nora","Claire","Nolwenn","Chantal","Roméo","Juliette","Gérard","Jacques","Michel","Pierre","Gaëtan","Jason","Chris","Damien","Jordan","Lucas","Maxime","Valentin","Théo","Guillaume","Marcel","Clément");
+	$noms = array("Arpin","Faubert","Guibord","Lapointe","Gougeon","Labelle","Givry","Lazure","Rodrigue","Bernard","Boivin","Daigle","Chalifour","Compagnon","Bisaillon","Noël","Trépanier","Gagnon","Bernier","Auberjonois","Louineaux","Patenaude","Bourgeois","Dupont","Carignan","Martin","Boisclair","Desjardins","Charette","Gabriaux","Bonenfant","Flamand","Quiron","Gousse","Lereau");
 	$img = "defaut.png";
 	$fichier = fopen($db, "a+");
 
