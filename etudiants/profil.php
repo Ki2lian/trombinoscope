@@ -12,7 +12,7 @@ if(isset($_SESSION["id"])){
 	$telephone = $_SESSION["numero"];
 }
 
-if (isset($_POST["form-modifgeneral"]) || isset($_POST["form-modifpassword"]) || isset($_POST["form-modifmail"])) {
+if (isset($_POST["form-modifgeneral"]) || isset($_POST["form-modifpassword"]) || isset($_POST["form-modifmail"]) || isset($_POST["form-avatar"]) ) {
 	$msg = "c'est bien, mais j'ai pas commencé à faire";
 }
 
@@ -68,6 +68,7 @@ if (isset($_SESSION["nom"])) {?>
 		<button onclick="modif('modif-general')" class="btn">Modification Générale</button>
 		<button onclick="modif('modif-password')" class="btn">Changement du mot de passe</button>
 		<button onclick="modif('modif-mail')" class="btn">Changement d'email</button>
+		<button onclick="modif('modif-avatar')" class="btn">Changement d'avatar</button>
 	</div>
 </div>
 
@@ -271,6 +272,18 @@ if (isset($_SESSION["nom"])) {?>
 	</form>
 </div>
 
+<div class="row" id="modif-avatar" style="display: none;">
+	<form name="formAvatar" method="post" enctype="multipart/form-data">
+		<div>
+    		<input class="uploadFile" name="file" type="file" multiple accept=".png, .jpg, .jpeg" required="required" aria-required="true"/>
+ 		</div> 
+  		<div id="preview-file">
+
+  		</div>
+  		<input class="submit-form" type="submit" name="form-avatar" value="Changer" />
+	</form>
+</div>
+
 <?php
 if (isset($msg)) {
 	echo "<div class='row'>\n";
@@ -287,12 +300,19 @@ if (isset($msg)) {
 		if (id == "modif-general") {
 			document.getElementById("modif-password").style.display = 'none';
 			document.getElementById("modif-mail").style.display = 'none';
+			document.getElementById("modif-avatar").style.display = 'none';
 		}else if (id == "modif-password") {
 			document.getElementById("modif-general").style.display = 'none';
 			document.getElementById("modif-mail").style.display = 'none';
+			document.getElementById("modif-avatar").style.display = 'none';
 		}else if (id == "modif-mail") {
 			document.getElementById("modif-general").style.display = 'none';
 			document.getElementById("modif-password").style.display = 'none';
+			document.getElementById("modif-avatar").style.display = 'none';
+		}else if (id == "modif-avatar") {
+			document.getElementById("modif-general").style.display = 'none';
+			document.getElementById("modif-password").style.display = 'none';
+			document.getElementById("modif-mail").style.display = 'none';
 		}
 
 		if (divModifActuel.style.display == 'none') {
@@ -300,7 +320,44 @@ if (isset($msg)) {
 		}else{
 				divModifActuel.style.display = 'none';
 		}
-}
+	}
+
+	// Ces fonctions proviennent du site: https://codepen.io/Zonecss/pen/mzXojY
+
+	function createThumbnail(sFile,sId) {
+	  var oReader = new FileReader();
+	  oReader.addEventListener('load', function() {
+	    var oImgElement = document.createElement('img');
+	    oImgElement.classList.add('img-profil') 
+	    oImgElement.src = this.result;
+	    document.getElementById('preview-'+sId).appendChild(oImgElement);
+	  }, false);
+
+	  oReader.readAsDataURL(sFile);
+
+	}
+	function changeInputFil(oEvent){
+	  var oInputFile = oEvent.currentTarget,
+	      sName = oInputFile.name,
+	      aFiles = oInputFile.files,
+	      aAllowedTypes = ['png', 'jpg', 'jpeg'],
+	      imgType;  
+	  document.getElementById('preview-'+sName).innerHTML ='';
+	  for (var i = 0 ; i < aFiles.length ; i++) {
+	    imgType = aFiles[i].name.split('.');
+	    imgType = imgType[imgType.length - 1];
+	    if(aAllowedTypes.indexOf(imgType) != -1) {
+	      createThumbnail(aFiles[i],sName);
+	    }
+	  }
+	}
+
+	document.addEventListener('DOMContentLoaded',function(){
+	 var aFileInput = document.forms['formAvatar'].querySelectorAll('[type=file]');
+	  for(var k = 0; k < aFileInput.length;k++){
+	    aFileInput[k].addEventListener('change', changeInputFil, false);
+	  }
+	});
 </script>
 
 <script src="js/script.js"></script>

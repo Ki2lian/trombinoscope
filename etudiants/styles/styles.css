@@ -98,12 +98,19 @@ td{
 	padding-bottom: 5%;
 }
 
-td > input{
+td > input, .uploadFile{
 	border: 1px solid #000;
   	border-radius: 4px;
   	padding: 15px;
-  	width: 100%;
   	font-size: 25px;
+}
+
+td > input{
+	width: 100%;
+}
+
+.uploadFile{
+  	width: 40%;
 }
 
 #mdp, #mdp3{
