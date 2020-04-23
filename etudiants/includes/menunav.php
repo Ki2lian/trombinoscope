@@ -11,11 +11,19 @@
         <?php
     }else{
     ?>
-        <li class="menu"><a href="profil.php">Mon profil</a>
+        <li class="menu"><a href="../profil.php">Mon profil</a>
         </li>
-        <li class="menu"><a href="parametres.php">Paramètres</a>
+        <li class="menu"><a href="../parametres/">Paramètres</a>
         </li>
-        <li class="menu"><a href="deconnexion.php">Déconnexion</a>
+        <?php
+        if ($_SESSION["id"] == 1) {
+            ?>
+            <li class="menu"><a href="../administration.php">Administration</a>
+            </li>
+            <?php
+        }
+        ?>
+        <li class="menu"><a href="../deconnexion.php">Déconnexion</a>
         </li>
     <?php } ?>
     </ul>

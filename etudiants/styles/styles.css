@@ -122,6 +122,16 @@ td > input{
 .img-profil{
 	width: 150px;
 	height: 150px;
+	position: absolute;
+    -webkit-box-shadow: 0 1px 0 2px rgba(0,0,0,.3);
+    box-shadow: 0 1px 0 2px rgba(0,0,0,.3);
+    background-color: #02353c;
+    border: 2px solid #267b91;
+    border-radius: 50%;
+    width: 88px;
+    z-index: 11;
+    height: 88px;
+    background-position: center 1px;
 }
 
 select{
@@ -162,7 +172,40 @@ select::-ms-expand{
 	color:#7ed6df;
 }
 
+.row{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: 50px;
+    /*margin-left: -5px;*/
+}
 
+.box{
+    overflow: hidden;
+    word-wrap: break-word;
+    margin-bottom: 15px;
+    border-radius: 3px;
+}
+
+.profil_framed{
+    border-radius: 6px;
+    padding: 5px 1px 5px 57px;
+    width: auto;
+    position: relative;
+    border: dashed 1px #181818;
+    margin: 13px 1px 5px 51px;
+}
+
+.profil_name {
+    font-size: 25px;
+    color: #30336b;
+    text-shadow: 0 1px 2px #000;
+    padding-left: 49px;
+    padding: 0;
+    margin: 0;
+}
 /*
 footer {
 	margin-top: auto;

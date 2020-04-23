@@ -188,7 +188,6 @@ function changeAvatar(){
 			$chemin = "img/profil/" . $id . "." . $extensionUpload;
 			$resultat = move_uploaded_file($_FILES["avatar"]["tmp_name"], $chemin);
 			if ($resultat) {
-				// Prend l'image actuel pour la remplacer avec la nouvelle dans la base de données
 				$_SESSION["avatar"] = $id . "." . $extensionUpload;
 				putAvatarCodeInDb("db.csv");
 
@@ -213,5 +212,104 @@ function writeLogs($fichier, $message){
 	fclose($fichier);
 }
 
+// Fonctions pour générer des comptes
+
+	// Création de comptes
+function genereAccount($db, $nombre=20){
+	$prenoms = array("William","Eugène","Arianne","Evrard","Madelene","Aurore","Marguerite","Philippine","Fabienne","Eustache","Senapus","Jean","Baptiste","Corette","Honore","Thomas","André","Benjamin","Rémy","Amaury","Aubin");
+	$noms = array("Arpin","Faubert","Guibord","Lapointe","Gougeon","Labelle","Givry","Lazure","Rodrigue","Bernard","Boivin","Daigle","Chalifour","Compagnon","Bisaillon","Noël","Trépanier","Gagnon","Bernier","Auberjonois","Louineaux");
+	$img = "defaut.png";
+	$fichier = fopen($db, "a+");
+
+	for ($i=0; $i < $nombre ; $i++) {
+		$rand_prenoms = array_rand($prenoms, 2);
+		$rand_noms = array_rand($noms, 2);
+		$nom = $noms[$rand_noms[0]];
+		$prenom = $prenoms[$rand_prenoms[0]];
+		$mail = randMail($nom, $prenom);
+		$telephone = randTelephone();
+		$filiere = randForG("filiere");
+		$groupe = randForG("groupe");
+		$anniv = randAnniv();
+		$key = randomKey(32);
+		$mdp = hash("sha256", strtolower($nom[4] . $prenom[4]) . $key);
+		$id = getID($db);
+
+
+		if (verifName($db, $nom, $prenom) == True) {
+			while (verifNum($db, $telephone) == False) {
+				$telephone = randTelephone();
+			}
+			fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
+			echo "Le compte $nom $prenom a été créé.<br/>";
+			writeLogs("logs/general.log", "$nom $prenom;a été créé par l'administrateur.");
+		}else{
+			echo "Le compte $nom $prenom existe déjà, il n'a pas pu être créé.<br/>";
+			writeLogs("logs/general.log", "$nom $prenom;le compte existe déjà, il n'a pas pu être crée.");
+		}
+	}
+	$fichier = fopen($db, "a+");
+}
+
+	// Génère une adresse email selon le nom et le prénom et après l'arobase, c'est aléatoire.
+function randMail($nom, $prenom){
+	$mails = array("gmail.com","yahoo.fr","hotmail.fr","hotmail.com","outlook.com","sfr.fr","orange.fr","free.fr","email.fr","live.fr","laposte.net","aol.com","sfr.com","francetv.fr","msn.com","voila.fr");
+	$rand_mails = array_rand($mails, 2);
+	$mail = $nom . $prenom . "@" . $mails[$rand_mails[0]];
+	return $mail;
+}
+
+	// Génère un numéro de téléphone
+function randTelephone(){
+	$numero = "0" . mt_rand(6,7);
+	for ($i=0; $i < 4; $i++) { 
+		$nombre = mt_rand(1,99);
+
+		if ($nombre < 10) {
+			$nombre = "0" . $nombre;
+		}
+
+		$numero .= strval($nombre);
+	}
+	return $numero;
+}
+
+
+	// Génère une date d'anniversaire aléatoire
+function randAnniv(){
+	$annees = mt_rand(1997,2002);
+
+	$mois = mt_rand(1,12);
+	if ($mois < 10) {
+		$mois = "0" . $mois;
+	}
+
+	$jour = mt_rand(1,28);
+	if ($jour < 10) {
+		$jour = "0" . $jour;
+	}
+
+	$anniv = $annees . "-" . $mois . "-" . $jour;
+
+	$anniv = verifDateAnniv($anniv);
+	return $anniv;
+}
+
+	// Donne une filière aléatoire ou un groupe aléatoire (F = filière, G = groupe)
+function randForG($choix){
+
+	if ($choix == "filiere") {
+		$filieres = array("L1-MIPI","L2-MIPI", "L3-I", "LP RS", "LPI-RIWS");
+		$rand_filieres = array_rand($filieres, 2);
+		return $filieres[$rand_filieres[0]];
+	}elseif ($choix == "groupe") {
+		$groupes = array("A1","B2","LPI-1","LPI-2","LPI-3");
+		$rand_groupes = array_rand($groupes, 2);
+		return $groupes[$rand_groupes[0]];
+	}else{
+		return "Ce choix n'existe pas.";
+	}
+}
 
 ?>
+

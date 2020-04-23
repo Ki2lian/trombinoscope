@@ -1,11 +1,44 @@
+<?php session_start();
+?>
+<?php
+if (isset($_SESSION["id"]) && $_SESSION["id"] == 1) {
+	include("config/function.php");
+	$nom = $_SESSION["nom"];
+	$prenom = $_SESSION["prenom"];
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Compteur</title>
+	<title>Administration</title>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" type="text/css" href="styles/styles.css"/>
+	<link rel="icon" type="image/png" href="img/faviconcoursucp.png" />
 </head>
 <body>
-	<!-- DEBUT DU SCRIPT COMPTE A REBOURS -->
- 
+<header>
+  <?php include "includes/menunav.php" ?>
+</header>
+<form method="post">
+	<input type="number" name="nombre" required="required" aria-required="true" placeholder="Nombre de comptes à générer" style="width: 12%;" />
+	<input type="submit" name="form-generate-account" value="Générer"/>
+</form>
+<?php
+if (isset($_POST["form-generate-account"])) {
+	$nombre = intval($_POST["nombre"]);
+	writeLogs("logs/general.log", "$nom $prenom;a généré $nombre compte(s).");
+	genereAccount("db.csv", $nombre);
+}
+if (isset($erreur)) {
+	echo "<font color='#eb2f06' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
+}
+?>
+
+
+
+
+
+
 <script language="JavaScript1.2">
  
  
@@ -99,3 +132,10 @@ setTimeout("countdown()",1000)
 </script><!-- FIN DU SCRIPT COMPTE A REBOURS -->
 </body>
 </html>
+<?php
+}else{
+	header("location: index.php");
+}
+
+
+?>
