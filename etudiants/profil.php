@@ -1,22 +1,144 @@
 <?php  setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
+include("includes/function.php");
 if(isset($_SESSION["id"])){
-	//$pseudo = "Bienvenue sur votre profil " . $_SESSION["nom"] . " " . $_SESSION["prenom"];
+	$id = $_SESSION["id"];
 	$nom = $_SESSION["nom"];
 	$prenom = $_SESSION["prenom"];
 	$img = $_SESSION["avatar"];
 	$date = $_SESSION["date"];
-	$groupe = $_SESSION["groupe"];
 	$filiere = $_SESSION["filiere"];
+	$groupe = $_SESSION["groupe"];
 	$anniv = $_SESSION["anniv"];
 	$mail = $_SESSION["mail"];
 	$telephone = $_SESSION["numero"];
 }
 
-if (isset($_POST["form-modifgeneral"]) || isset($_POST["form-modifpassword"]) || isset($_POST["form-modifmail"]) || isset($_POST["form-avatar"]) ) {
-	$msg = "c'est bien, mais j'ai pas commencé à faire";
+if (isset($_POST["form-modifgeneral"])) {
+	if (!empty($_POST["nom"]) && !empty($_POST["prenom"]) && !empty($_POST["numero"]) && !empty($_POST["filiere"]) && !empty($_POST["groupe"]) && !empty($_POST["anniv"])){
+		$modifNom = htmlspecialchars($_POST["nom"]);
+		$modifPrenom = htmlspecialchars($_POST["prenom"]);
+		$modifTelephone = $_POST["numero"];
+		$modifFiliere = $_POST["filiere"];
+		$modifGroupe = $_POST["groupe"];
+		$modifAnniv = $_POST["anniv"];
+		if (preg_match('#^[a-zA-Z]*$#', $modifNom) && preg_match('#^[a-zA-Z]*$#', $modifPrenom)) {
+			if ($nom != $modifNom || $prenom != $modifPrenom) {
+				if (verifName("db.csv", $modifNom, $modifPrenom) == False) {
+					$modifNom = $nom;
+					$modifPrenom = $prenom;
+					$msgError = "Le nom et le prénom n'ont pas pu être modifié car il existe déjà.";
+					$erreur = True;
+				}else{
+					writeLogs("modif.log", "$nom $prenom;nom;a modifié son prénom et/ou nom pour $modifNom $modifPrenom");
+				}
+			}
+		}else{
+			$msgError = "Le nom ou le prénom ne peut pas contenir de caractères spéciaux et/ou de chiffres.";
+			$erreur = True;
+			$modifNom = $nom;
+			$modifPrenom = $prenom;
+		}
+
+		if ($telephone != $modifTelephone) {
+			if (verifNum("db.csv", $modifTelephone) != False) {
+				$modifTelephone = verifNum("db.csv", $modifTelephone);
+				writeLogs("modif.log", "$nom $prenom;telephone;a modifié son numéro de téléphone (avant: $telephone | maintenant: $modifTelephone)");
+			}else{
+				$modifTelephone = $telephone;
+				$msgError = "Le numéro n'a pas pu être modifié car il existe déjà.";
+				$erreur = True;
+			}
+		}
+		
+		if (strftime("%Y-%m-%d", $anniv) != $modifAnniv) {
+			if (verifDateAnniv($modifAnniv) != False) {
+				$modifAnniv = verifDateAnniv($modifAnniv);
+				writeLogs("modif.log", "$nom $prenom;anniv;a modifié sa date de naissance (avant:" . strftime('%d/%m/%Y', $anniv) ."| maintenant:" . strftime('%d/%m/%Y', $modifAnniv) . ")");
+			}else{
+				$modifAnniv = strftime("%Y-%m-%d", $anniv);
+				$msgError = "La date de naissance n'a pas pu être modifié car la date n'est pas reconnue.";
+				$erreur = True;
+			}
+		}else{
+			$modifAnniv = $anniv;
+		}
+
+		if ($modifFiliere != $filiere) {
+			writeLogs("modif.log", "$nom $prenom;filiere;a modifié sa filière (avant: $filiere | maintenant: $modifFiliere)");
+		}
+
+		if ($modifGroupe != $groupe) {
+			writeLogs("modif.log", "$nom $prenom;groupe;a modifié son groupe (avant: $groupe | maintenant: $modifGroupe)");
+		}
+		ModifGeneral("db.csv", $modifNom, $modifPrenom, $modifTelephone, $modifFiliere, $modifGroupe, $modifAnniv, $erreur);
+	}
 }
 
+if (isset($_POST["form-modifpassword"])) {
+	if (!empty($_POST["mdp"]) && !empty($_POST["mdp3"]) && !empty($_POST["mdp4"])){
+		$mdp = htmlspecialchars($_POST["mdp"]);
+		$mdp3 = htmlspecialchars($_POST["mdp3"]);
+		$mdp4 = htmlspecialchars($_POST["mdp4"]);
 
+		if (strlen($_POST["mdp3"]) >= 8 || strlen($_POST["mdp4"]) >= 8) {
+			if ($mdp3 == $mdp4) {
+				if (verifPassword("db.csv", $mdp) == True) {
+					if ($mdp != $mdp3) {
+						modifPassword("db.csv", $mdp3);
+						$modifOK = "Le mot de passe a bien changé.";
+						writeLogs("modif.log", "$nom $prenom;password;a modifié son mot de passe");
+					}else{
+						$msgError = "Le mot de passe doit être différent de celui actuel."; header('refresh:5;url=profil');}
+				}else{
+					$msgError = "Votre mot de passe actuel n'est pas correct."; header('refresh:5;url=profil');}
+			}else{
+				$msgError = "Les deux mots de passe doivent correspondre."; header('refresh:5;url=profil');}
+		}else{
+			$msgError = "Les mots de passe doivent contenir au moins 8 caractères."; header('refresh:5;url=profil');}
+	}
+}
+
+if (isset($_POST["form-modifmail"])) {
+	if (!empty($_POST["mail"]) && !empty($_POST["mail2"])){
+		$modifMail = htmlspecialchars($_POST["mail"]);
+		$modifMail2 = htmlspecialchars($_POST["mail2"]);
+
+		if ($modifMail == $modifMail2) {
+
+			if (filter_var($modifMail, FILTER_VALIDATE_EMAIL)) {
+				if ($mail != $modifMail) {
+					if (verifMail($db, $modifMail) == True) {
+						modifMail($db, $modifMail);
+						writeLogs("modif.log", "$nom $prenom;email;a modifié son email (avant: $mail | maintenant: $modifMail)");
+					}else{
+						$msgError = "L'adresse email a déjà été utilisée."; header('refresh:5;url=profil');}
+				}else{
+					$msgError = "L'email doit être différent de celui actuel."; header('refresh:5;url=profil');}
+			}else{
+				$msgError = "L'adresse email n'est pas valide."; header('refresh:5;url=profil');}
+		}else{
+			$msgError = "Les deux emails doivent correspondre."; header('refresh:5;url=profil');}
+	}
+}
+
+if (isset($_POST["form-avatar"]) ) {
+	if (isset($_FILES["file"]) && !empty($_FILES["file"]["name"])) {
+		$cAvatar = changeAvatar("file");
+		if ($cAvatar == "erreur1") {
+			$msgError = "Il y a eu une erreur durant l'importation de votre photo de profil.";
+			header('refresh:5;url=profil');
+		}elseif ($cAvatar == "erreur2") {
+			$msgError = "Votre photo de profil doit être au format jpg, jpeg ou png.";
+			header('refresh:5;url=profil');
+		}elseif ($cAvatar == "erreur3") {
+			$msgError = "Votre photo de profil ne doit pas dépasser 2Mo.";
+			header('refresh:5;url=profil');
+		}else{
+			writeLogs("modif.log", "$nom $prenom;avatar;a modifié son avatar");
+			header("location: profil");
+		}
+	}
+}
 
 ?>
 <?php
@@ -24,7 +146,7 @@ if (isset($_SESSION["nom"])) {?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-	<title>Profil</title>
+	<title>Profil: <?php echo $nom . " " . $prenom ?></title>
 	<meta charset="utf-8"/>
 	<link rel="stylesheet" type="text/css" href="styles/styles.css"/>
 	<link rel="icon" type="image/png" href="img/faviconcoursucp.png" />
@@ -39,26 +161,27 @@ if (isset($_SESSION["nom"])) {?>
 		<div class="box_body profil">
 			<img class="img-profil" src="img/profil/<?php echo $img; ?>" />
 		</div>
+		<div id="preview-file"></div>
 		<div class="profil_framed">
 			<h2 class="profil_name"><?php echo $nom . " " . $prenom; ?></h2>
 		</div>
 		<div class="profil_about">
-			<u>Inscrit le:</u><?php echo " " . strftime("%e %B %Y", $date); ?>
+			<p class="underline">Inscrit le:</p><p class="bold"><?php echo " " . strftime("%d %B %Y", $date); ?></p>
 		</div>
 		<div class="profil_about">
-			<u>Filière:</u><?php echo " " . $filiere; ?>
+			<p class="underline">Filière:</p><p class="bold"><?php echo " " . $filiere; ?></p>
 		</div>
 		<div class="profil_about">
-			<u>Groupe:</u><?php echo " " . $groupe; ?>
+			<p class="underline">Groupe:</p><p class="bold"><?php echo " " . $groupe; ?></p>
 		</div>
 		<div class="profil_about">
-			<u>Email:</u><?php echo " " . $mail; ?>
+			<p class="underline">Email:</p><p class="bold"><?php echo " " . $mail; ?></p>
 		</div>
 		<div class="profil_about">
-			<u>Téléphone:</u><?php echo " " . $telephone; ?>
+			<p class="underline">Téléphone:</p><p class="bold"><?php echo " " . $telephone; ?></p>
 		</div>
 		<div class="profil_about">
-			<u>Anniversaire:</u><?php echo " " . strftime("%e/%m/%Y", $anniv); ?>
+			<p class="underline">Anniversaire:</p><p class="bold"><?php echo " " . strftime("%d/%m/%Y", $anniv); ?></p>
 		</div>
 	</div>
 </div>
@@ -73,203 +196,216 @@ if (isset($_SESSION["nom"])) {?>
 </div>
 
 <div class="row" id="modif-general" style="display: none;">
-	<form method="post">
-		<table>
-			<tr>
-				<td>
-					<input title="Votre nom" type="text" maxlength="20" placeholder="Nom" id="nom" name="nom" required="required" aria-required="true" value="<?php echo($nom); ?>"/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input title="Votre prénom" type="text" maxlength="20" placeholder="Prénom" id="prenom" name="prenom" required="required" aria-required="true" value="<?php echo($prenom); ?>"/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input title="Votre numéro de téléphone portable" type="text" placeholder="Numéro de téléphone portable" id="numero" name="numero" required="required" aria-required="true" value="<?php echo($telephone); ?>" pattern="0[1-68]([-. ]?[0-9]{2}){4}"/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input title="Date de naissance" type="date" value="<?php echo strftime("%Y-%m-%e", $anniv); ?>" name="anniv" required="required" aria-required="true"/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<select name="filiere">
-						<?php
-							switch ($filiere) {
-								case "L1-MIPI":
-								?>
-									<option selected="" value="L1-MIPI">L1-MIPI</option>
-									<option value="L2-MIPI">L2-MIPI</option>
-									<option value="L3-I">L3-I</option>
-									<option value="LP RS">LP RS</option>
-									<option value="LPI-RIWS">LPI-RIWS</option>
-								<?php
-									break;
-
-								case "L2-MIPI":
-								?>
-									<option value="L1-MIPI">L1-MIPI</option>
-									<option selected="" value="L2-MIPI">L2-MIPI</option>
-									<option value="L3-I">L3-I</option>
-									<option value="LP RS">LP RS</option>
-									<option value="LPI-RIWS">LPI-RIWS</option>
-								<?php
-									break;
-
-								case "L3-I":
-								?>
-									<option value="L1-MIPI">L1-MIPI</option>
-									<option value="L2-MIPI">L2-MIPI</option>
-									<option selected="" value="L3-I">L3-I</option>
-									<option value="LP RS">LP RS</option>
-									<option value="LPI-RIWS">LPI-RIWS</option>
-								<?php
-									break;
-
-								case "LP RS":
-								?>
-									<option value="L1-MIPI">L1-MIPI</option>
-									<option value="L2-MIPI">L2-MIPI</option>
-									<option value="L3-I">L3-I</option>
-									<option selected="" value="LP RS">LP RS</option>
-									<option value="LPI-RIWS">LPI-RIWS</option>
-								<?php
-									break;
-
-								case "LPI-RIWS":
-								?>
-									<option value="L1-MIPI">L1-MIPI</option>
-									<option value="L2-MIPI">L2-MIPI</option>
-									<option value="L3-I">L3-I</option>
-									<option value="LP RS">LP RS</option>
-									<option selected="" value="LPI-RIWS">LPI-RIWS</option>
-									<?php break; 
-							}?>
-					
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<select name="groupe">
-						<?php
-								switch ($groupe) {
-									case "A1":
+	<div class="form-modif">
+		<form method="post">
+			<table>
+				<tr>
+					<td>
+						<input title="Votre nom" type="text" maxlength="20" placeholder="Nom" id="nom" name="nom" required="required" aria-required="true" value="<?php echo($nom); ?>"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input title="Votre prénom" type="text" maxlength="20" placeholder="Prénom" id="prenom" name="prenom" required="required" aria-required="true" value="<?php echo($prenom); ?>"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input title="Votre numéro de téléphone portable" type="text" placeholder="Numéro de téléphone portable" id="numero" name="numero" required="required" aria-required="true" value="<?php echo($telephone); ?>" pattern="0[1-68]([-. ]?[0-9]{2}){4}"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input title="Date de naissance" type="date" value="<?php echo strftime("%Y-%m-%d", $anniv); ?>" name="anniv" required="required" aria-required="true"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<select name="filiere">
+							<?php
+								switch ($filiere) {
+									case "L1-MIPI":
 									?>
-										<option selected="" value="A1">A1</option>
-										<option value="B2">B2</option>
-										<option value="LPI-1">LPI-1</option>
-										<option value="LPI-2">LPI-2</option>
-										<option value="LPI-3">LPI-3</option>
+										<option selected="" value="L1-MIPI">L1-MIPI</option>
+										<option value="L2-MIPI">L2-MIPI</option>
+										<option value="L3-I">L3-I</option>
+										<option value="LP RS">LP RS</option>
+										<option value="LPI-RIWS">LPI-RIWS</option>
 									<?php
 										break;
 
-									case "B2":
+									case "L2-MIPI":
 									?>
-										<option value="A1">A1</option>
-										<option selected="" value="B2">B2</option>
-										<option value="LPI-1">LPI-1</option>
-										<option value="LPI-2">LPI-2</option>
-										<option value="LPI-3">LPI-3</option>
+										<option value="L1-MIPI">L1-MIPI</option>
+										<option selected="" value="L2-MIPI">L2-MIPI</option>
+										<option value="L3-I">L3-I</option>
+										<option value="LP RS">LP RS</option>
+										<option value="LPI-RIWS">LPI-RIWS</option>
 									<?php
 										break;
 
-									case "LPI-1":
+									case "L3-I":
 									?>
-										<option value="A1">A1</option>
-										<option value="B2">B2</option>
-										<option selected="" value="LPI-1">LPI-1</option>
-										<option value="LPI-2">LPI-2</option>
-										<option value="LPI-3">LPI-3</option>
+										<option value="L1-MIPI">L1-MIPI</option>
+										<option value="L2-MIPI">L2-MIPI</option>
+										<option selected="" value="L3-I">L3-I</option>
+										<option value="LP RS">LP RS</option>
+										<option value="LPI-RIWS">LPI-RIWS</option>
 									<?php
 										break;
 
-									case "LPI-2":
+									case "LP RS":
 									?>
-										<option value="A1">A1</option>
-										<option value="B2">B2</option>
-										<option value="LPI-1">LPI-1</option>
-										<option selected="" value="LPI-2">LPI-2</option>
-										<option value="LPI-3">LPI-3</option>
+										<option value="L1-MIPI">L1-MIPI</option>
+										<option value="L2-MIPI">L2-MIPI</option>
+										<option value="L3-I">L3-I</option>
+										<option selected="" value="LP RS">LP RS</option>
+										<option value="LPI-RIWS">LPI-RIWS</option>
 									<?php
 										break;
 
-									case "LPI-3":
+									case "LPI-RIWS":
 									?>
-									<option value="A1">A1</option>
-									<option value="B2">B2</option>
-									<option value="LPI-1">LPI-1</option>
-									<option value="LPI-2">LPI-2</option>
-									<option selected="" value="LPI-3">LPI-3</option>
-									<?php
-										break;
+										<option value="L1-MIPI">L1-MIPI</option>
+										<option value="L2-MIPI">L2-MIPI</option>
+										<option value="L3-I">L3-I</option>
+										<option value="LP RS">LP RS</option>
+										<option selected="" value="LPI-RIWS">LPI-RIWS</option>
+										<?php break; 
 								}?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input class="submit-form" type="submit" value="Modifier" name="form-modifgeneral" />
-				</td>
-			</tr>
+						
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<select name="groupe">
+							<?php
+									switch ($groupe) {
+										case "A1":
+										?>
+											<option selected="" value="A1">A1</option>
+											<option value="B2">B2</option>
+											<option value="LPI-1">LPI-1</option>
+											<option value="LPI-2">LPI-2</option>
+											<option value="LPI-3">LPI-3</option>
+										<?php
+											break;
 
-		</table>
+										case "B2":
+										?>
+											<option value="A1">A1</option>
+											<option selected="" value="B2">B2</option>
+											<option value="LPI-1">LPI-1</option>
+											<option value="LPI-2">LPI-2</option>
+											<option value="LPI-3">LPI-3</option>
+										<?php
+											break;
 
-	</form>
+										case "LPI-1":
+										?>
+											<option value="A1">A1</option>
+											<option value="B2">B2</option>
+											<option selected="" value="LPI-1">LPI-1</option>
+											<option value="LPI-2">LPI-2</option>
+											<option value="LPI-3">LPI-3</option>
+										<?php
+											break;
+
+										case "LPI-2":
+										?>
+											<option value="A1">A1</option>
+											<option value="B2">B2</option>
+											<option value="LPI-1">LPI-1</option>
+											<option selected="" value="LPI-2">LPI-2</option>
+											<option value="LPI-3">LPI-3</option>
+										<?php
+											break;
+
+										case "LPI-3":
+										?>
+										<option value="A1">A1</option>
+										<option value="B2">B2</option>
+										<option value="LPI-1">LPI-1</option>
+										<option value="LPI-2">LPI-2</option>
+										<option selected="" value="LPI-3">LPI-3</option>
+										<?php
+											break;
+									}?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input class="submit-form" type="submit" value="Modifier" name="form-modifgeneral" />
+					</td>
+				</tr>
+
+			</table>
+		</form>
+	</div>
 </div>
 
 <div class="row" id="modif-password" style="display: none;">
-	<form method="post">
-		<table>
-			<tr>
-				<td>
-					<input title="Votre mot de passe actuel" type="password" placeholder="Votre mot de passe actuel" id="mdp" name="mdp" required="required" aria-required="true" minlength="8" />
-				</td>
-				<td>
-					<img id="eyes_mdp" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input title="Votre nouveau mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Nouveau mot de passe" id="mdp3" name="mdp3" required="required" aria-required="true" minlength="8" />
-				</td>
-				<td>
-					<img id="eyes_mdp2" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp3'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input class="submit-form" type="submit" value="Modifier" name="form-modifpassword" />
-				</td>
-			</tr>
-		</table>
-	</form>
+	<div class="form-modif">
+		<form method="post">
+			<table>
+				<tr>
+					<td>
+						<input title="Votre mot de passe actuel" type="password" placeholder="Votre mot de passe actuel" id="mdp" name="mdp" required="required" aria-required="true" minlength="8" />
+					</td>
+					<td>
+						<img id="eyes_mdp" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input title="Votre nouveau mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Nouveau mot de passe" id="mdp3" name="mdp3" required="required" aria-required="true" minlength="8" />
+					</td>
+					<td>
+						<img id="eyes_mdp2" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp3'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input title="Confirmation du nouveau mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Confirmation du nouveau mot de passe" id="mdp4" name="mdp4" required="required" aria-required="true" minlength="8" />
+					</td>
+					<td>
+						<img id="eyes_mdp3" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp4'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input class="submit-form" type="submit" value="Modifier" name="form-modifpassword" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
 </div>
 
 <div class="row" id="modif-mail" style="display: none;">
-	<form method="post">
-		<table>
-			<tr>
-				<td>
-					<input title="Votre nouvel email" type="email" placeholder="Nouvel email" id="mail" name="mail" required="required" aria-required="true" value=""/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input title="Votre nouvel email de confirmation" type="email" placeholder="Nouvel email de confirmation" id="mail2" name="mail2" required="required" aria-required="true" value=""/>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input class="submit-form" type="submit" value="Modifier" name="form-modifmail" />
-				</td>
-			</tr>
-		</table>
-	</form>
+	<div class="form-modif">
+		<form method="post">
+			<table>
+				<tr>
+					<td>
+						<input title="Votre nouvel email" type="email" placeholder="Nouvel email" id="mail" name="mail" required="required" aria-required="true" value=""/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input title="Votre nouvel email de confirmation" type="email" placeholder="Nouvel email de confirmation" id="mail2" name="mail2" required="required" aria-required="true" value=""/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input class="submit-form" type="submit" value="Modifier" name="form-modifmail" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
 </div>
 
 <div class="row" id="modif-avatar" style="display: none;">
@@ -277,20 +413,33 @@ if (isset($_SESSION["nom"])) {?>
 		<div>
     		<input class="uploadFile" name="file" type="file" multiple accept=".png, .jpg, .jpeg" required="required" aria-required="true"/>
  		</div> 
-  		<div id="preview-file">
+  		<!--<div id="preview-file">
 
-  		</div>
+  		</div>-->
   		<input class="submit-form" type="submit" name="form-avatar" value="Changer" />
 	</form>
 </div>
 
 <?php
-if (isset($msg)) {
-	echo "<div class='row'>\n";
-	echo $msg;
+
+if (isset($msgError)) {
+	echo "<div id='center'>\n";
+	echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $msgError . "</font><br/>\n";
+	echo "<font id='temps-modif-profil' color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">La page va se recharger automatiquement dans 5 secondes</font>\n";
 	echo "</div>";
 }
 
+if (isset($modifOK)) {
+	echo "<div id='center'>\n";
+		echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $modifOK . "</font>\n";
+	echo "</div>";
+}
+
+if (isset($msg)) {
+	echo "<div id='center'>\n";
+	echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $msg . "</font><br/>\n";
+	echo "</div>";
+}
 ?>
 
 <script type="text/javascript">
@@ -320,6 +469,10 @@ if (isset($msg)) {
 		}else{
 				divModifActuel.style.display = 'none';
 		}
+		if (document.getElementById("center")) {
+			document.getElementById("center").style.display = 'none';
+		}
+		
 	}
 
 	// Ces fonctions proviennent du site: https://codepen.io/Zonecss/pen/mzXojY

@@ -1,6 +1,6 @@
 <?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
 if (isset($_POST["form-connexion"])) {
-	include("config/function.php");
+	include("includes/function.php");
 	$mail = htmlspecialchars($_POST["mail"]);
 	$mdp = htmlspecialchars($_POST["mdp"]);
 
@@ -23,8 +23,8 @@ if (isset($_POST["form-connexion"])) {
 					$_SESSION["avatar"] = $tableau[8];
 					$_SESSION["date"] = $tableau[9];
 					$_SESSION["anniv"] = $tableau[10];
-					writeLogs("logs/general.log", "$tableau[1] $tableau[2];s'est connecté");
-					header("Location: profil.php");
+					writeLogs("general.log", "$tableau[1] $tableau[2];s'est connecté");
+					header("Location: profil");
 				}else{
 					$erreur = "Vous devez vérifier votre compte en cliquant sur le lien sur votre email pour pouvoir vous connecter.";}
 			}else{
@@ -71,14 +71,14 @@ if (!isset($_SESSION["nom"])) {?>
 <?php
 if (isset($erreur)) {
 	echo "<div class='error'>\n";
-	echo "<font color='#eb2f06' style=\"font-weight: bold;margin-left: 24%; font-size: 18px;\">". $erreur . "</font>\n";
+	echo "<font color='#dc3545' style=\"font-weight: bold;margin-left: 24%; font-size: 18px;\">". $erreur . "</font>\n";
 	echo "</div>\n";
 }
 ?>
 </div>
 <?php
 }else{
-	header("Location: profil.php");
+	header("Location: profil");
 }
 ?>
 <script src="js/script.js"></script>

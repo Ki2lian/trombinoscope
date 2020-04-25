@@ -1,9 +1,9 @@
 <?php
 session_start();
-include("config/function.php");
+include("includes/function.php");
 $nom = $_SESSION["nom"];
 $prenom = $_SESSION["prenom"];
-writeLogs("logs/general.log", "$nom $prenom;s'est déconnecté");
+writeLogs("general.log", "$nom $prenom;s'est déconnecté");
 $_SESSION = array();
 session_destroy();
 header("Location: index.php");

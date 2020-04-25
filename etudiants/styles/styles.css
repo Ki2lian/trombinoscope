@@ -94,6 +94,10 @@ nav > ul > li:hover > a{
     width: 50%;
 }
 
+.form-modif{
+	margin-left: 2%;
+}
+
 td{
 	padding-bottom: 5%;
 }
@@ -110,10 +114,10 @@ td > input{
 }
 
 .uploadFile{
-  	width: 40%;
+  	width: 31%;
 }
 
-#mdp, #mdp3{
+#mdp, #mdp3, #mdp4{
 	width: 90%;
 }
 
@@ -253,6 +257,23 @@ select::-ms-expand{
 
 .btn:hover {
     background-color: #128ed5;
+}
+
+#center{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: block;
+    margin-left: 30%;
+}
+
+.underline{
+	display : inline;
+	text-decoration: underline;
+}
+
+.bold{
+	display : inline;
+	font-weight: bold;
 }
 /*
 footer {

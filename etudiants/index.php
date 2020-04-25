@@ -1,6 +1,6 @@
 <?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
 if (isset($_POST["form-inscription"])) {
-	include("config/function.php");
+	include("includes/function.php");
 	$key = randomKey(32);
 	$id = getID($db);
 
@@ -34,7 +34,8 @@ if (isset($_POST["form-inscription"])) {
 
 								if (preg_match("#^0[1-68]([-. ]?[0-9]{2}){4}$#", $telephone)){
 
-									if (verifNum($db, $telephone) == True) {
+									if (verifNum($db, $telephone) != False) {
+										$telephone = verifNum($db, $telephone);
 
 										if (verifDateAnniv($anniv) != False) {
 											$anniv = verifDateAnniv($anniv);
@@ -48,11 +49,11 @@ if (isset($_POST["form-inscription"])) {
 													fclose($fichier);
 													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". urlencode($key) ."'
 													";
-													writeLogs("logs/general.log", "$nom $prenom;s'est inscrit");
+													writeLogs("general.log", "$nom $prenom;s'est inscrit");
 													/*mail($mail, "Confirmation d'inscription", $message);
 
 													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";*/
-													$inscriptionOK = "Votre compte a été crée avec succès.";
+													$inscriptionOK = "Votre compte a été créé avec succès.";
 
 												}else{
 													$erreur = "Les mots de passe ne correspondent pas.";}
@@ -293,21 +294,21 @@ if (!isset($_SESSION["nom"])) {?>
 <?php
 if (isset($erreur)) {
 	echo "<div class='error'>\n";
-	echo "<font color='#eb2f06' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
+	echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
 	echo "</div>\n";
 }
 ?>
 <?php
 if (isset($inscriptionOK)) {
 	echo "<div class='inscriptionOK'>\n";
-	echo "<font color='green' style=\"font-weight: bold;\">". $inscriptionOK . "</font>\n";
+	echo "<font color='#28a745' style=\"font-weight: bold;\">". $inscriptionOK . "</font>\n";
 	echo "</div>\n";
 }
 ?>
 </div>
 <?php
 }else{
-	header("Location: profil.php");
+	header("Location: profil");
 }
 ?>
 <script src="js/script.js"></script>

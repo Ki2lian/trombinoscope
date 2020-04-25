@@ -41,6 +41,7 @@ function verifMail($db, $email){
 		$tableau = explode(";", $ligne);
 
 		if ($tableau[3] == $email) {
+			fclose($fichier);
 			return False;
 		}
 	}
@@ -61,11 +62,12 @@ function verifNum($db, $num){
 
 
 		if ($tableau[4] == $num) {
+			fclose($fichier);
 			return False;
 		}
 	}
 	fclose($fichier);
-	return True;
+	return $num;
 }
 
 	// Vérifie si la date d'anniversaire est valide ou non (pour éviter le changement de type depuis inspécter l'élément, t'as pas essayé hein !)
@@ -158,7 +160,6 @@ function putAvatarCodeInDb($db){
     while ($lignes = fgets($fichier)){
 	 	$lignes = explode(';', $lignes);
 		if ($lignes[0] == $id){
-			$validate = 1;
 
 			$stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . $lignes[7] . ";" . $valeur . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" .  $lignes[12];
 		}else{
@@ -176,21 +177,36 @@ function putAvatarCodeInDb($db){
 }
 
 	// Vérifie la taille de l'image, l'extension de l'image et 
-function changeAvatar(){
+function changeAvatar($name){
 	$tailleMax = 2097152; // 2 Mo
 	$extensionsValides = array("jpg", "jpeg", "png");
 	$id = $_SESSION["id"];
-	if ($_FILES["avatar"]["size"] <= $tailleMax ) {
-		
-		$extensionUpload = strtolower(substr(strrchr($_FILES["avatar"]["name"], "."), 1));
+
+	if ($_FILES[$name]["size"] <= $tailleMax ) {
+		$extensionUpload = strtolower(substr(strrchr($_FILES[$name]["name"], "."), 1));
 		if (in_array($extensionUpload, $extensionsValides)) {
-			
+
+			// Suppression des images peu importe l'extension
+			$avatarJpg = "img/profil/" . $id . ".jpg";
+			$avatarJpeg = "img/profil/" . $id . ".jpeg";
+			$avatarPng = "img/profil/" . $id . ".png";
+			if( file_exists ( $avatarJpg)){
+     			unlink( $avatarJpg ) ;
+			}
+			if( file_exists ( $avatarJpeg)){
+     			unlink( $avatarJpeg ) ;
+			}
+			if( file_exists ( $avatarPng)){
+     			unlink( $avatarPng ) ;
+			}
+
 			$chemin = "img/profil/" . $id . "." . $extensionUpload;
-			$resultat = move_uploaded_file($_FILES["avatar"]["tmp_name"], $chemin);
+			$resultat = move_uploaded_file($_FILES[$name]["tmp_name"], $chemin);
 			if ($resultat) {
 				$_SESSION["avatar"] = $id . "." . $extensionUpload;
 				putAvatarCodeInDb("db.csv");
 
+				return "ça a marché";
 			}else{
 				return "erreur1";
 			}
@@ -206,8 +222,8 @@ function changeAvatar(){
 
 	// Écrit dans le fichier qu'on veut avec le message qu'on veut
 function writeLogs($fichier, $message){
-	$fichier = fopen($fichier, "a+");
-	$write = strftime("%e/%m/%Y à %T", time()) . ";" . mktime() . ";" . $message . "\n";
+	$fichier = fopen( "logs/" . $fichier, "a+");
+	$write = strftime("%d/%m/%Y à %T", time()) . ";" . mktime() . ";" . $message . "\n";
 	fputs($fichier, $write);
 	fclose($fichier);
 }
@@ -242,10 +258,10 @@ function genereAccount($db, $nombre=20){
 			}
 			fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
 			echo "Le compte $nom $prenom a été créé.<br/>";
-			writeLogs("logs/general.log", "$nom $prenom;a été créé par l'administrateur");
+			writeLogs("general.log", "$nom $prenom;a été créé par l'administrateur");
 		}else{
 			echo "Le compte $nom $prenom existe déjà, il n'a pas pu être créé.<br/>";
-			writeLogs("logs/general.log", "$nom $prenom;le compte existe déjà, il n'a pas pu être crée");
+			writeLogs("general.log", "$nom $prenom;le compte existe déjà, il n'a pas pu être crée");
 		}
 	}
 	$fichier = fopen($db, "a+");
@@ -310,6 +326,115 @@ function randForG($choix){
 		return "Ce choix n'existe pas.";
 	}
 }
+
+// Fonctions pour modifier le profil
+
+	// Modification des informations générales
+function ModifGeneral($db, $nom, $prenom, $telephone, $filiere, $groupe, $anniv, $erreur=False){
+	$fichier = fopen($db, "r");
+	$id = $_SESSION["id"];
+
+	$_SESSION["nom"] = $nom;
+	$_SESSION["prenom"] = $prenom;
+	$_SESSION["numero"] = $telephone;
+	$_SESSION["filiere"] = $filiere;
+	$_SESSION["groupe"] = $groupe;
+	$_SESSION["anniv"] = $anniv;
+
+	$tableauStock = array();
+    while ($lignes = fgets($fichier)){
+	 	$lignes = explode(';', $lignes);
+		if ($lignes[0] == $id){
+
+			$stockerLigne = $lignes[0] . ";" . $nom . ";" . $prenom . ";" . $lignes[3] . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $lignes[7] . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $anniv . ";" . $lignes[11] . ";" .  $lignes[12];
+
+		}else{
+		    $stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . $lignes[7] . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $lignes[12];
+		}
+		array_push($tableauStock, $stockerLigne);
+	}
+
+	fclose($fichier);
+	$fichier = fopen($db, "w");
+	for ($i = 0; $i < sizeof($tableauStock); $i++){
+		fputs($fichier, $tableauStock[$i]);
+	}
+	if ($erreur == True) {
+		header('refresh:5;url=profil');
+	}else{
+		header("location: profil");
+	}
+
+}
+
+	// Fonction qui vérifie si le mot de passe actuel est bon ou non
+function verifPassword($db, $password){
+	$id = $_SESSION["id"];
+	$lignes = file($db);
+	for ($i=0; $i < sizeof($lignes) ; $i++) {
+		$ligne = $lignes[$i];
+		$ligne = str_replace("\n", "", $ligne);
+
+		$tableau = explode(";", $ligne);
+
+		if ($tableau[0] == $id && $tableau[7] == hash("sha256", $password . $tableau[11])) {
+			return True;
+		}
+	}
+	return False;
+}
+
+function modifPassword($db, $password){
+	$fichier = fopen($db, "r");
+	$tableauStock = array();
+	$id = $_SESSION["id"];
+
+    while ($lignes = fgets($fichier)){
+	 	$lignes = explode(';', $lignes);
+		if ($lignes[0] == $id){
+
+			$stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . hash("sha256", $password . $lignes[11]) . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $lignes[12];
+
+		}else{
+		    $stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . $lignes[7] . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $lignes[12];
+		}
+		array_push($tableauStock, $stockerLigne);
+	}
+
+	fclose($fichier);
+	$fichier = fopen($db, "w");
+	for ($i = 0; $i < sizeof($tableauStock); $i++){
+		fputs($fichier, $tableauStock[$i]);
+	}
+}
+
+function modifMail($db, $mail){
+	$fichier = fopen($db, "r");
+	$tableauStock = array();
+	$id = $_SESSION["id"];
+
+	$_SESSION["mail"] = $mail;
+    while ($lignes = fgets($fichier)){
+	 	$lignes = explode(';', $lignes);
+		if ($lignes[0] == $id){
+
+			$stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $mail . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . $lignes[7] . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $lignes[12];
+
+		}else{
+		    $stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . $lignes[7] . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $lignes[12];
+		}
+		array_push($tableauStock, $stockerLigne);
+	}
+
+	fclose($fichier);
+	$fichier = fopen($db, "w");
+	for ($i = 0; $i < sizeof($tableauStock); $i++){
+		fputs($fichier, $tableauStock[$i]);
+	}
+	header("location: profil");
+}
+
+
 
 ?>
 
