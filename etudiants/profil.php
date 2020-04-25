@@ -163,7 +163,7 @@ if (isset($_SESSION["nom"])) {?>
 		</div>
 		<div id="preview-file"></div>
 		<div class="profil_framed">
-			<h2 class="profil_name"><?php echo $nom . " " . $prenom; ?></h2>
+			<h2 class="profil_name"><?php echo strtoupper($nom) . " "  . ucfirst(strtolower($prenom)); ?></h2>
 		</div>
 		<div class="profil_about">
 			<p class="underline">Inscrit le:</p><p class="bold"><?php echo " " . strftime("%d %B %Y", $date); ?></p>
@@ -413,9 +413,6 @@ if (isset($_SESSION["nom"])) {?>
 		<div>
     		<input class="uploadFile" name="file" type="file" multiple accept=".png, .jpg, .jpeg" required="required" aria-required="true"/>
  		</div> 
-  		<!--<div id="preview-file">
-
-  		</div>-->
   		<input class="submit-form" type="submit" name="form-avatar" value="Changer" />
 	</form>
 </div>
