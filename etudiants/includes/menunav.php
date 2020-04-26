@@ -1,4 +1,4 @@
-<h1 class="title">Trombinoscope</h1>
+<h1 class="title">Etudiant</h1>
 <nav>
     <ul>
 <?php

@@ -4,27 +4,19 @@ if (isset($_POST["form-connexion"])) {
 	$mail = htmlspecialchars($_POST["mail"]);
 	$mdp = htmlspecialchars($_POST["mdp"]);
 
+
 	if (!empty($mail) && !empty($mdp)) {
 
 		if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
 
 			if (verifConnexion($db, $mail, $mdp) != False) {
 				$tableau = verifConnexion($db, $mail, $mdp);
-				if ($tableau[12] == 1) {
-					$_SESSION["id"] = $tableau[0];
-					$_SESSION["nom"] = $tableau[1];
-					$_SESSION["prenom"] = $tableau[2];
-					$_SESSION["mail"] = $tableau[3];
-					$_SESSION["numero"] = $tableau[4];
-					$_SESSION["filiere"] = $tableau[5];
-					$_SESSION["groupe"] = $tableau[6];
-					$_SESSION["avatar"] = $tableau[8];
-					$_SESSION["date"] = $tableau[9];
-					$_SESSION["anniv"] = $tableau[10];
-					writeLogs("general.log", "$tableau[1] $tableau[2];s'est connecté");
-					header("Location: profil");
-				}else{
-					$erreur = "Vous devez vérifier votre compte en cliquant sur le lien sur votre email pour pouvoir vous connecter.";}
+				$_SESSION["id"] = $tableau[0];
+				$_SESSION["nom"] = $tableau[1];
+				$_SESSION["prenom"] = $tableau[2];
+				$_SESSION["mail"] = $tableau[3];
+				writeLogs("general.log", "$tableau[1] $tableau[2];s'est connecté");
+				header("Location: api");
 			}else{
 				$erreur = "L'email ou le mot de passe est incorrect !";}
 		}else{
@@ -76,7 +68,7 @@ if (isset($erreur)) {
 </div>
 <?php
 }else{
-	header("Location: profil");
+	// header("Location: api");
 }
 ?>
 <script src="js/script.js"></script>
