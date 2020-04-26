@@ -71,7 +71,7 @@ function verifConnexion($db, $email, $password){
 
 		if ($tableau[3] == $email && $tableau[4] == hash("sha256", $password . $tableau[6])) {
 			for ($i = 0; $i < 7; $i++){
-			 $stockInformation[$i] = $tableau[$i];
+			 	$stockInformation[$i] = $tableau[$i];
 			}
 			return $stockInformation;
 		}elseif($i == sizeof($lignes)-1){

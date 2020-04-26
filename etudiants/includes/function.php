@@ -1,5 +1,4 @@
-<?php
-$db = "db.csv";
+<?php include("config.php");
 
 // Fonctions pour la page index.php (inscription)
 
@@ -101,10 +100,9 @@ function verifConnexion($db, $email, $password){
 		$ligne = str_replace("\n", "", $ligne);
 
 		$tableau = explode(";", $ligne);
-
 		if ($tableau[3] == $email && $tableau[7] == hash("sha256", $password . $tableau[11])) {
 			for ($i = 0; $i < 13; $i++){
-			 $stockInformation[$i] = $tableau[$i];
+			 	$stockInformation[$i] = $tableau[$i];
 			}
 			return $stockInformation;
 		}elseif($i == sizeof($lignes)-1){
@@ -204,7 +202,7 @@ function changeAvatar($name){
 			$resultat = move_uploaded_file($_FILES[$name]["tmp_name"], $chemin);
 			if ($resultat) {
 				$_SESSION["avatar"] = $id . "." . $extensionUpload;
-				putAvatarCodeInDb("db.csv");
+				putAvatarCodeInDb($db);
 
 				return "ça a marché";
 			}else{
@@ -232,6 +230,7 @@ function writeLogs($fichier, $message){
 
 	// Création de comptes
 function genereAccount($db, $nombre=20){
+	include("config.php");
 	$prenoms = array("William","Eugène","Arianne","Evrard","Madelene","Aurore","Marguerite","Philippine","Fabienne","Eustache","Senapus","Jean","Baptiste","Corette","Honore","Thomas","André","Benjamin","Rémy","Amaury","Aubin","Jeanne","Elena","Salomé","Clara","Léa","Emma","Marie","Lola","Sarah","Erwann","Adrien","Paul","Margot","Madisson","Nora","Claire","Nolwenn","Chantal","Roméo","Juliette","Gérard","Jacques","Michel","Pierre","Gaëtan","Jason","Chris","Damien","Jordan","Lucas","Maxime","Valentin","Théo","Guillaume","Marcel","Clément");
 	$noms = array("Arpin","Faubert","Guibord","Lapointe","Gougeon","Labelle","Givry","Lazure","Rodrigue","Bernard","Boivin","Daigle","Chalifour","Compagnon","Bisaillon","Noël","Trépanier","Gagnon","Bernier","Auberjonois","Louineaux","Patenaude","Bourgeois","Dupont","Carignan","Martin","Boisclair","Desjardins","Charette","Gabriaux","Bonenfant","Flamand","Quiron","Gousse","Lereau");
 	$img = "defaut.png";
@@ -248,9 +247,9 @@ function genereAccount($db, $nombre=20){
 		$groupe = randForG("groupe");
 		$anniv = randAnniv();
 		$key = randomKey(32);
-		$mdp = hash("sha256", strtolower($nom[4] . $prenom[4]) . $key);
-		$id = getID($db);
 
+		$mdp = hash("sha256", strtolower(substr("$nom", 0, 5) . substr("$prenom", 0, 5)) . $key);
+		$id = getID($db);
 
 		if (verifName($db, $nom, $prenom) == True) {
 			while (verifNum($db, $telephone) == False) {
@@ -258,18 +257,30 @@ function genereAccount($db, $nombre=20){
 			}
 			fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
 			echo "Le compte $nom $prenom a été créé.<br/>";
-			writeLogs("general.log", "$nom $prenom;a été créé par l'administrateur");
+			writeLogs($generalLog, "$nom $prenom;a été créé par l'administrateur");
 		}else{
 			echo "Le compte $nom $prenom existe déjà, il n'a pas pu être créé.<br/>";
-			writeLogs("general.log", "$nom $prenom;le compte existe déjà, il n'a pas pu être crée");
+			writeLogs($generalLog, "$nom $prenom;le compte existe déjà, il n'a pas pu être crée");
 		}
 	}
 	$fichier = fopen($db, "a+");
 }
 
+	// Permet de retirer les accents
+function modifForRandMail($nom){
+    $search  = array('È', 'É', 'Ê', 'Ë','è', 'é', 'ê', 'ë');
+	$replace = array('E', 'E', 'E', 'E','e', 'e', 'e', 'e');
+
+    $modif = str_replace($search, $replace, $nom);
+    return $modif; 
+  }
+
+
 	// Génère une adresse email selon le nom et le prénom et après l'arobase, c'est aléatoire.
 function randMail($nom, $prenom){
 	$mails = array("gmail.com","yahoo.fr","hotmail.fr","hotmail.com","outlook.com","sfr.fr","orange.fr","free.fr","email.fr","live.fr","laposte.net","aol.com","sfr.com","francetv.fr","msn.com","voila.fr");
+	$nom = modifForRandMail($nom);
+	$prenom = modifForRandMail($prenom);
 	$rand_mails = array_rand($mails, 2);
 	$mail = $nom . $prenom . "@" . $mails[$rand_mails[0]];
 	return $mail;

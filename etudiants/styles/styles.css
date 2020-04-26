@@ -197,7 +197,6 @@ select::-ms-expand{
     overflow: hidden;
     word-wrap: break-word;
     margin-bottom: 15px;
-    border-radius: 3px;
 }
 
 .profil_framed{
@@ -206,7 +205,6 @@ select::-ms-expand{
     width: auto;
     position: relative;
     border: dashed 1.2px #181818;
-    /*margin: 13px 1px 5px 51px;*/
     margin: 13px 1px 5px 100px;
 }
 
@@ -221,8 +219,8 @@ select::-ms-expand{
 
 .profil_about {
     display: block;
-    padding: 5px;
-    margin-left: 45%;
+    padding: 1px;
+    margin-left: 55%;
 }
 
 .col-md-4 {

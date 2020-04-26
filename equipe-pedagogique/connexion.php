@@ -1,4 +1,4 @@
-<?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
+<?php include("includes/config.php");
 if (isset($_POST["form-connexion"])) {
 	include("includes/function.php");
 	$mail = htmlspecialchars($_POST["mail"]);
@@ -15,7 +15,7 @@ if (isset($_POST["form-connexion"])) {
 				$_SESSION["nom"] = $tableau[1];
 				$_SESSION["prenom"] = $tableau[2];
 				$_SESSION["mail"] = $tableau[3];
-				writeLogs("general.log", "$tableau[1] $tableau[2];s'est connecté");
+				writeLogs($generalLog, "$tableau[1] $tableau[2];s'est connecté");
 				header("Location: api");
 			}else{
 				$erreur = "L'email ou le mot de passe est incorrect !";}

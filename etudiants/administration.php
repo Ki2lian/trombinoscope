@@ -1,4 +1,4 @@
-<?php session_start();
+<?php include("includes/config.php");
 ?>
 <?php
 if (isset($_SESSION["id"]) && $_SESSION["id"] == 1) {
@@ -26,8 +26,8 @@ if (isset($_SESSION["id"]) && $_SESSION["id"] == 1) {
 <?php
 if (isset($_POST["form-generate-account"])) {
 	$nombre = intval($_POST["nombre"]);
-	writeLogs("general.log", "$nom $prenom;a généré $nombre compte(s)");
-	genereAccount("db.csv", $nombre);
+	writeLogs($generalLog, "$nom $prenom;a généré $nombre compte(s)");
+	genereAccount($db, $nombre);
 }
 if (isset($erreur)) {
 	echo "<font color='#eb2f06' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
@@ -49,7 +49,7 @@ yr=theyear;mo=themonth;da=theday;hr=thehour;min=themin;sec=thesec
 ////////// CONFIGUREZ LE COMPTEUR CI-DESSOUS //////////////////
  
 // 1°) Configurez la date dans le futur dans le format ANNEE, MOIS, JOUR, HEURES sur 24h (0=minuit,23=11pm), MINUTES, SECONDES
-setcountdown(2020,05,10,01,23,59)
+setcountdown(2020,05,10,23,59,59)
  
 // 2°) Changez les deux textes ci-dessous. Le premier pour annoncer l'évènement, le second qui s'affichera à la fin du compte à rebours.
 var occasion=" la fin du projet"
@@ -134,7 +134,7 @@ setTimeout("countdown()",1000)
 </html>
 <?php
 }else{
-	header("location: index.php");
+	header("location: index");
 }
 
 

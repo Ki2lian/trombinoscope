@@ -1,4 +1,4 @@
-<?php  setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
+<?php  include("includes/config.php");
 include("includes/function.php");
 if(isset($_SESSION["id"])){
 	$id = $_SESSION["id"];
@@ -23,13 +23,13 @@ if (isset($_POST["form-modifgeneral"])) {
 		$modifAnniv = $_POST["anniv"];
 		if (preg_match('#^[a-zA-Z]*$#', $modifNom) && preg_match('#^[a-zA-Z]*$#', $modifPrenom)) {
 			if ($nom != $modifNom || $prenom != $modifPrenom) {
-				if (verifName("db.csv", $modifNom, $modifPrenom) == False) {
+				if (verifName($db, $modifNom, $modifPrenom) == False) {
 					$modifNom = $nom;
 					$modifPrenom = $prenom;
 					$msgError = "Le nom et le prénom n'ont pas pu être modifié car il existe déjà.";
 					$erreur = True;
 				}else{
-					writeLogs("modif.log", "$nom $prenom;nom;a modifié son prénom et/ou nom pour $modifNom $modifPrenom");
+					writeLogs($modifLog, "$nom $prenom;nom;a modifié son prénom et/ou nom pour $modifNom $modifPrenom");
 				}
 			}
 		}else{
@@ -40,9 +40,9 @@ if (isset($_POST["form-modifgeneral"])) {
 		}
 
 		if ($telephone != $modifTelephone) {
-			if (verifNum("db.csv", $modifTelephone) != False) {
-				$modifTelephone = verifNum("db.csv", $modifTelephone);
-				writeLogs("modif.log", "$nom $prenom;telephone;a modifié son numéro de téléphone (avant: $telephone | maintenant: $modifTelephone)");
+			if (verifNum($db, $modifTelephone) != False) {
+				$modifTelephone = verifNum($db, $modifTelephone);
+				writeLogs($modifLog, "$nom $prenom;telephone;a modifié son numéro de téléphone (avant: $telephone | maintenant: $modifTelephone)");
 			}else{
 				$modifTelephone = $telephone;
 				$msgError = "Le numéro n'a pas pu être modifié car il existe déjà.";
@@ -53,7 +53,7 @@ if (isset($_POST["form-modifgeneral"])) {
 		if (strftime("%Y-%m-%d", $anniv) != $modifAnniv) {
 			if (verifDateAnniv($modifAnniv) != False) {
 				$modifAnniv = verifDateAnniv($modifAnniv);
-				writeLogs("modif.log", "$nom $prenom;anniv;a modifié sa date de naissance (avant:" . strftime('%d/%m/%Y', $anniv) ."| maintenant:" . strftime('%d/%m/%Y', $modifAnniv) . ")");
+				writeLogs($modifLog, "$nom $prenom;anniv;a modifié sa date de naissance (avant:" . strftime('%d/%m/%Y', $anniv) ."| maintenant:" . strftime('%d/%m/%Y', $modifAnniv) . ")");
 			}else{
 				$modifAnniv = strftime("%Y-%m-%d", $anniv);
 				$msgError = "La date de naissance n'a pas pu être modifié car la date n'est pas reconnue.";
@@ -64,13 +64,13 @@ if (isset($_POST["form-modifgeneral"])) {
 		}
 
 		if ($modifFiliere != $filiere) {
-			writeLogs("modif.log", "$nom $prenom;filiere;a modifié sa filière (avant: $filiere | maintenant: $modifFiliere)");
+			writeLogs($modifLog, "$nom $prenom;filiere;a modifié sa filière (avant: $filiere | maintenant: $modifFiliere)");
 		}
 
 		if ($modifGroupe != $groupe) {
-			writeLogs("modif.log", "$nom $prenom;groupe;a modifié son groupe (avant: $groupe | maintenant: $modifGroupe)");
+			writeLogs($modifLog, "$nom $prenom;groupe;a modifié son groupe (avant: $groupe | maintenant: $modifGroupe)");
 		}
-		ModifGeneral("db.csv", $modifNom, $modifPrenom, $modifTelephone, $modifFiliere, $modifGroupe, $modifAnniv, $erreur);
+		ModifGeneral($db, $modifNom, $modifPrenom, $modifTelephone, $modifFiliere, $modifGroupe, $modifAnniv, $erreur);
 	}
 }
 
@@ -82,11 +82,11 @@ if (isset($_POST["form-modifpassword"])) {
 
 		if (strlen($_POST["mdp3"]) >= 8 || strlen($_POST["mdp4"]) >= 8) {
 			if ($mdp3 == $mdp4) {
-				if (verifPassword("db.csv", $mdp) == True) {
+				if (verifPassword($db, $mdp) == True) {
 					if ($mdp != $mdp3) {
-						modifPassword("db.csv", $mdp3);
+						modifPassword($db, $mdp3);
 						$modifOK = "Le mot de passe a bien changé.";
-						writeLogs("modif.log", "$nom $prenom;password;a modifié son mot de passe");
+						writeLogs($modifLog, "$nom $prenom;password;a modifié son mot de passe");
 					}else{
 						$msgError = "Le mot de passe doit être différent de celui actuel."; header('refresh:5;url=profil');}
 				}else{
@@ -109,7 +109,7 @@ if (isset($_POST["form-modifmail"])) {
 				if ($mail != $modifMail) {
 					if (verifMail($db, $modifMail) == True) {
 						modifMail($db, $modifMail);
-						writeLogs("modif.log", "$nom $prenom;email;a modifié son email (avant: $mail | maintenant: $modifMail)");
+						writeLogs($modifLog, "$nom $prenom;email;a modifié son email (avant: $mail | maintenant: $modifMail)");
 					}else{
 						$msgError = "L'adresse email a déjà été utilisée."; header('refresh:5;url=profil');}
 				}else{
@@ -134,7 +134,7 @@ if (isset($_POST["form-avatar"]) ) {
 			$msgError = "Votre photo de profil ne doit pas dépasser 2Mo.";
 			header('refresh:5;url=profil');
 		}else{
-			writeLogs("modif.log", "$nom $prenom;avatar;a modifié son avatar");
+			writeLogs($modifLog, "$nom $prenom;avatar;a modifié son avatar");
 			header("location: profil");
 		}
 	}
@@ -163,7 +163,7 @@ if (isset($_SESSION["nom"])) {?>
 		</div>
 		<div id="preview-file"></div>
 		<div class="profil_framed">
-			<h2 class="profil_name"><?php echo strtoupper($nom) . " "  . ucfirst(strtolower($prenom)); ?></h2>
+			<h2 class="profil_name"><?php echo mb_strtoupper($nom, 'UTF-8') . " "  . ucfirst(strtolower($prenom)); ?></h2>
 		</div>
 		<div class="profil_about">
 			<p class="underline">Inscrit le:</p><p class="bold"><?php echo " " . strftime("%d %B %Y", $date); ?></p>

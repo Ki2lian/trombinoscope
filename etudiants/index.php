@@ -1,4 +1,4 @@
-<?php setlocale(LC_TIME, 'fr', 'fr_FR'); session_start();
+<?php include("includes/config.php");
 if (isset($_POST["form-inscription"])) {
 	include("includes/function.php");
 	$key = randomKey(32);
@@ -49,7 +49,7 @@ if (isset($_POST["form-inscription"])) {
 													fclose($fichier);
 													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". urlencode($key) ."'
 													";
-													writeLogs("general.log", "$nom $prenom;s'est inscrit");
+													writeLogs($generalLog, "$nom $prenom;s'est inscrit");
 													/*mail($mail, "Confirmation d'inscription", $message);
 
 													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";*/

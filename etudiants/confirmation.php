@@ -1,4 +1,4 @@
-<?php
+<?php include("includes/config.php");
 
 if (!isset($_SESSION["id"]) && isset($_GET["prenom"], $_GET["nom"], $_GET["key"]) && !empty($_GET["prenom"]) && !empty($_GET["nom"]) && !empty($_GET["key"]) ) {
 	include("includes/function.php");
@@ -8,14 +8,14 @@ if (!isset($_SESSION["id"]) && isset($_GET["prenom"], $_GET["nom"], $_GET["key"]
 
 	if (VerifConfirmation($db, $nom, $prenom, $key) == 1) {
 		$cValidate = "CONFIRMATION VALIDÉE";
-		writeLogs("general.log", "$nom $prenom;confirmation du compte");
+		writeLogs($generalLog, "$nom $prenom;confirmation du compte");
 	}elseif (VerifConfirmation($db, $nom, $prenom, $key) == 3) {
 		$cEchec = "Le compte a déjà été validé. Vous allez être redirigé à la page de connexion dans 5 secondes.";
-		header('refresh:5;url=connexion.php');
+		header('refresh:5;url=connexion');
 	}else{
-		header("location: index.php");}
+		header("location: index");}
 }else{
-	header("location: index.php");}
+	header("location: index");}
 
 ?>
 

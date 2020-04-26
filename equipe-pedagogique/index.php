@@ -1,4 +1,4 @@
-<?php include("config.php");
+<?php include("includes/config.php");
 if (isset($_POST["form-inscription"])) {
 	include("includes/function.php");
 	$key = randomKey(32);
@@ -33,7 +33,7 @@ if (isset($_POST["form-inscription"])) {
 										$fichier = fopen($db, "a+");
 										fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";"  . $mdp . ";" . mktime() . ";" . $key . "\n");
 										fclose($fichier);
-										writeLogs("general.log", "$nom $prenom;s'est inscrit");
+										writeLogs($generalLog, "$nom $prenom;s'est inscrit");
 										$inscriptionOK = "Votre compte a été créé avec succès.";
 									}else{
 										$erreur = "Les mots de passe ne correspondent pas.";}
