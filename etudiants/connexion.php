@@ -8,8 +8,8 @@ if (isset($_POST["form-connexion"])) {
 
 		if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
 
-			if (verifConnexion($db, $mail, $mdp) != False) {
-				$tableau = verifConnexion($db, $mail, $mdp);
+			if (verifConnexion($db, $mail, $mdp, 3, 7, 11) != False) {
+				$tableau = verifConnexion($db, $mail, $mdp, 3, 7, 11);
 				if ($tableau[12] == 1) {
 					$_SESSION["id"] = $tableau[0];
 					$_SESSION["nom"] = $tableau[1];

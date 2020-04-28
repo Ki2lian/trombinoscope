@@ -92,7 +92,7 @@ function getID($db){
 // Fonction pour la connexion
 
 	// Vérifie si l'email, le mot de passe sont valides
-function verifConnexion($db, $email, $password){
+function verifConnexion($db, $email, $password, $posEmail, $posPassword, $posKey){
 	$lignes = file($db);
 	$stockInformation = array();
 	for ($i=0; $i < sizeof($lignes) ; $i++) {
@@ -100,7 +100,7 @@ function verifConnexion($db, $email, $password){
 		$ligne = str_replace("\n", "", $ligne);
 
 		$tableau = explode(";", $ligne);
-		if ($tableau[3] == $email && $tableau[7] == hash("sha256", $password . $tableau[11])) {
+		if ($tableau[$posEmail] == $email && $tableau[$posPassword] == hash("sha256", $password . $tableau[$posKey])) {
 			for ($i = 0; $i < 13; $i++){
 			 	$stockInformation[$i] = $tableau[$i];
 			}

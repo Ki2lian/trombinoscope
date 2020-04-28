@@ -9,32 +9,42 @@ if (isset($_POST["form-demand-key"])) {
 
 
 	if (!empty($_POST["mail"]) && !empty($_POST["mdp"]) && !empty($_POST["mdp2"])) {
-		if ($mail == $mail2) {
-			if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-				if (verifMail($dbApi, $mail) == True) {
-					if (strlen($_POST["mdp"]) >= 8 || strlen($_POST["mdp2"]) >= 8) {
-						if ($mdp == $mdp2) {
-							$fichier = fopen($dbApi, "a+");
-							fputs($fichier, $id+1 . ";" . $key . ";" . $mdp . ";" . $mail . ";" . strftime("%H", time()) . ";0" . "\n");
-							$message = "Bonjour, vous nous avez fait la demande pour une clé d'api, vous pourrez l'utiliser en suivant la documentation en cliquant sur ce lien https://etudiants.alwaysdata.net/api. Voici votre clé: $key";
-							writeLogs($generalLog, "$mail;a demandé une clé d'API, sa clé: $key");
-							mail($mail, "Clé d'API", $message);
-							$inscriptionOK = "Vous avez obtenu votre clé dans votre mail.";
-						}else{
-							$erreur = "Les mots de passe ne correspondent pas.";}
+		if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+			if (verifMail($dbApi, $mail) == True) {
+				if (strlen($_POST["mdp"]) >= 8 || strlen($_POST["mdp2"]) >= 8) {
+					if ($mdp == $mdp2) {
+						$fichier = fopen($dbApi, "a+");
+						fputs($fichier, $id+1 . ";" . $key . ";" . $mdp . ";" . $mail . ";" . strftime("%H", time()) . ";0" . "\n");
+						$message = "Bonjour, vous nous avez fait la demande pour une clé d'api, vous pourrez l'utiliser en suivant la documentation en cliquant sur ce lien https://etudiants.alwaysdata.net/api. Voici votre clé: $key";
+						writeLogs($apiLog, "$mail;a demandé une clé d'API, sa clé: $key");
+						//mail($mail, "Clé d'API", $message);
+						//$inscriptionOK = "Vous avez obtenu votre clé dans votre mail.";
+						$inscriptionOK = "Votre clé: $key";
 					}else{
-						$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}
+						$erreur = "Les mots de passe ne correspondent pas.";}
 				}else{
-					$erreur = "L'adresse email a déjà été utilisée.";}
+					$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}
 			}else{
-				$erreur = "L'adresse email n'est pas valide.";}
+				$erreur = "L'adresse email a déjà été utilisée.";}
 		}else{
-			$erreur = "Les adresses email ne correspondent pas.";}
+			$erreur = "L'adresse email n'est pas valide.";}
 	}else{
 		$erreur = "Tous les champs doivent être complétés.";}
-	
 }
 
+if (isset($_POST["form-recup-key"])) {
+	$mail = htmlspecialchars($_POST["mail"]);
+	$mdp = htmlspecialchars($_POST["mdp"]);
+	if (!empty($_POST["mail"]) && !empty($_POST["mdp"])) {
+		if (verifConnexion($dbApi, $mail, $mdp, 3, 2, 1) != False) {
+			$tableau = verifConnexion($dbApi, $mail, $mdp, 3, 2, 1);
+			$recupKey = "Votre clé: $tableau[1]";
+			writeLogs($apiLog, "$tableau[3];a fait une demande pour récupérer sa clé");
+		}else{
+			$erreurRecup = "L'email ou le mot de passe est incorrect !";}
+	}else{
+		$erreurRecup = "Tous les champs doivent être complétés.";}
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -223,7 +233,7 @@ if (isset($_POST["form-demand-key"])) {
 				<table>
 					<tr>
 						<td>
-							<input class="input-api" title="Votre email" type="email" placeholder="Email" name="mail" required="required" aria-required="true"/>
+							<input class="input-api" title="Votre email" type="email" placeholder="Email" name="mail" required="required" aria-required="true" value="<?php if (isset($erreur)) {echo($mail);} ?>" />
 						</td>
 					</tr>
 					<tr>
@@ -245,12 +255,19 @@ if (isset($_POST["form-demand-key"])) {
 				</table>
 				<input class="submit-form" type="submit" value="Obtenir" name="form-demand-key" />
 			</form>
+			<?php
+			if (isset($erreur)) {
+				echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
+			}elseif (isset($inscriptionOK)) {
+				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $inscriptionOK . "</font>\n";
+			}
+			?>
 			<h2>Récupérez votre clé</h2>
 			<form method="post">
 				<table>
 					<tr>
 						<td>
-							<input class="input-api" title="Votre email" type="email" placeholder="Email" name="mail" required="required" aria-required="true"/>
+							<input class="input-api" title="Votre email" type="email" placeholder="Email" name="mail" required="required" aria-required="true" value="<?php if (isset($erreurRecup)) {echo($mail);} ?>" />
 						</td>
 					</tr>
 					<tr>
@@ -264,6 +281,13 @@ if (isset($_POST["form-demand-key"])) {
 				</table>
 				<input class="submit-form" type="submit" value="Récuperer" name="form-recup-key" />
 			</form>
+			<?php 
+			if (isset($erreurRecup)) {
+				echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $erreurRecup . "</font>\n";
+			}elseif ($recupKey) {
+				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $recupKey . "</font>\n";
+			}
+			?>
 		</div>
 	</div>
 <script src="js/script.js"></script>

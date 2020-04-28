@@ -116,10 +116,7 @@ if (isset($erreur)) {
 	echo "<div class='error'>\n";
 	echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
 	echo "</div>\n";
-}
-?>
-<?php
-if (isset($inscriptionOK)) {
+}elseif (isset($inscriptionOK)) {
 	echo "<div class='inscriptionOK'>\n";
 	echo "<font color='#28a745' style=\"font-weight: bold;\">". $inscriptionOK . "</font>\n";
 	echo "</div>\n";

@@ -53,7 +53,8 @@ if (isset($_POST["form-inscription"])) {
 													/*mail($mail, "Confirmation d'inscription", $message);
 
 													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";*/
-													$inscriptionOK = "Votre compte a été créé avec succès.";
+													$inscriptionOK = "Votre compte a été crée, vous allez être redirigé à la page de connexion dans 3 secondes";
+													header('refresh:3;url=connexion.php');
 
 												}else{
 													$erreur = "Les mots de passe ne correspondent pas.";}
@@ -296,10 +297,7 @@ if (isset($erreur)) {
 	echo "<div class='error'>\n";
 	echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
 	echo "</div>\n";
-}
-?>
-<?php
-if (isset($inscriptionOK)) {
+}elseif (isset($inscriptionOK)) {
 	echo "<div class='inscriptionOK'>\n";
 	echo "<font color='#28a745' style=\"font-weight: bold;\">". $inscriptionOK . "</font>\n";
 	echo "</div>\n";
