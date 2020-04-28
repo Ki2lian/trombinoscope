@@ -150,6 +150,7 @@ function VerifConfirmation($db, $nom, $prenom, $key){
 
 	// Met le code de l'image dans la base de données
 function putAvatarCodeInDb($db){
+	include("config.php");
 	$fichier = fopen($db, "r");
 	$tableauStock = array();
 	$id = $_SESSION["id"];
@@ -171,6 +172,7 @@ function putAvatarCodeInDb($db){
 	for ($i = 0; $i < sizeof($tableauStock); $i++){
 		fputs($fichier, $tableauStock[$i]);
 	}
+	fclose($fichier);
 
 }
 
