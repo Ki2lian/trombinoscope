@@ -1,10 +1,10 @@
 <?php include("includes/config.php");
 
-$json = file_get_contents("https://etudiants.alwaysdata.net/test_api?filiere=L1-MIPI&groupe=A1");
-$json = json_decode($json,True);
+$jsonText = file_get_contents("https://etudiants.alwaysdata.net/filiere.json");
+$jsonArray = json_decode($jsonText,True);
 
-//print_r($json);
 
+// print_r($jsonArray);
 
 ?>
 <!DOCTYPE html>
@@ -41,11 +41,17 @@ $json = json_decode($json,True);
   <?php include "includes/menunav.php" ?>
 </header>
 	<form method="get">
-		<label><input type="radio" value="L1-MIPI" name="filiere"/>L1-MIPI</label>
-		<label><input type="radio" value="L2-MIPI" name="filiere"/>L2-MIPI</label>
-		<label><input type="radio" value="L3-I" name="filiere"/>L3-I</label>
-		<label><input type="radio" value="LP RS" name="filiere"/>LP RS</label>
-		<label><input type="radio" value="LPI-RIWS" name="filiere"/>LPI-RIWS</label>
+		<select>
+			<option selected="" disabled="">Choisir une filière</option>
+				<?php 
+					for ($i=0; $i < sizeof($jsonArray["filiere"]); $i++) { 
+						$jsonNom = $jsonArray["filiere"][$i]["nom"];
+						?>
+						<option value="<?php echo $jsonNom ?>"><?php echo $jsonNom ?></option>
+						<?php
+					}
+				?>			
+		</select>
 
 		<input type="submit" value="TEST"/>
 	</form>

@@ -1,4 +1,4 @@
-<h1 class="title">Etudiant</h1>
+<h1 class="title"><a class="a-menunav" href="index">Etudiant</a></h1>
 <nav>
     <ul>
 <?php

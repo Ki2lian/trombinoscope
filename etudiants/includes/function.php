@@ -71,7 +71,7 @@ function verifNum($db, $num){
 
 	// Vérifie si la date d'anniversaire est valide ou non (pour éviter le changement de type depuis inspécter l'élément, t'as pas essayé hein !)
 function verifDateAnniv($anniversaire){
-	if (preg_match('#^([0-9]{4})([-])([0-9]{2})\2([0-9]{2})$#', $anniversaire, $m) == 1 && checkdate($m[3], $m[4], $m[1])){						
+	if (preg_match('#^([0-9]{4})([-])([0-9]{2})\2([0-9]{2})$#', $anniversaire, $m) == 1 && checkdate($m[3], $m[4], $m[1])){						 
 		$tableau = explode("-", $anniversaire);
 		$anniversaire = mktime(12, 0, 0, $tableau[1], $tableau[2], $tableau[0]);
 		return $anniversaire;
@@ -233,16 +233,28 @@ function writeLogs($fichier, $message){
 	// Création de comptes
 function genereAccount($db, $nombre=20){
 	include("config.php");
-	$prenoms = array("William","Eugène","Arianne","Evrard","Madelene","Aurore","Marguerite","Philippine","Fabienne","Eustache","Senapus","Jean","Baptiste","Corette","Honore","Thomas","André","Benjamin","Rémy","Amaury","Aubin","Jeanne","Elena","Salomé","Clara","Léa","Emma","Marie","Lola","Sarah","Erwann","Adrien","Paul","Margot","Madisson","Nora","Claire","Nolwenn","Chantal","Roméo","Juliette","Gérard","Jacques","Michel","Pierre","Gaëtan","Jason","Chris","Damien","Jordan","Lucas","Maxime","Valentin","Théo","Guillaume","Marcel","Clément");
+	$prenomsGars = array("William","Eugène","Evrard","Eustache","Senapus","Jean","Baptiste","Honore","Thomas","André","Benjamin","Rémy","Amaury","Aubin","Erwann","Adrien","Paul","Roméo","Gérard","Jacques","Michel","Pierre","Gaëtan","Jason","Chris","Damien","Jordan","Lucas","Maxime","Valentin","Théo","Guillaume","Marcel","Clément");
+
+	$prenomsFille = array("Arianne","Madelene","Aurore","Marguerite","Philippine","Fabienne","Lola","Sarah","Margot","Madisson","Nora","Claire","Nolwenn","Chantal","Juliette","Corette","Jeanne","Elena","Salomé","Clara","Léa","Emma","Marie","Cécile", "Fauna","Margaux","Nicole","Noémie","Clémence","Léane","Louise","Virginie", "Laure");
+
 	$noms = array("Arpin","Faubert","Guibord","Lapointe","Gougeon","Labelle","Givry","Lazure","Rodrigue","Bernard","Boivin","Daigle","Chalifour","Compagnon","Bisaillon","Noël","Trépanier","Gagnon","Bernier","Auberjonois","Louineaux","Patenaude","Bourgeois","Dupont","Carignan","Martin","Boisclair","Desjardins","Charette","Gabriaux","Bonenfant","Flamand","Quiron","Gousse","Lereau");
-	$img = "defaut.png";
+
 	$fichier = fopen($db, "a+");
 
 	for ($i=0; $i < $nombre ; $i++) {
-		$rand_prenoms = array_rand($prenoms, 2);
+		if (mt_rand(1,2) == 1) {
+			$rand_prenoms = array_rand($prenomsGars, 2);
+			$prenom = $prenomsGars[$rand_prenoms[0]];
+			$jsonTextApiImg = file_get_contents("https://api.generated.photos/api/v1/faces?order_by=random&age=young-adult&gender=male&api_key=w0SRVHs26SUQfkDCExFpDA");
+		}else{
+			$rand_prenoms = array_rand($prenomsFille, 2);
+			$prenom = $prenomsFille[$rand_prenoms[0]];
+			$jsonTextApiImg = file_get_contents("https://api.generated.photos/api/v1/faces?order_by=random&age=young-adult&gender=female&api_key=w0SRVHs26SUQfkDCExFpDA");
+		}
+		$jsonArrayApiImg = json_decode($jsonTextApiImg, True);
+		
 		$rand_noms = array_rand($noms, 2);
 		$nom = $noms[$rand_noms[0]];
-		$prenom = $prenoms[$rand_prenoms[0]];
 		$mail = randMail($nom, $prenom);
 		$telephone = randTelephone();
 		$filiere = randForG("filiere");
@@ -252,12 +264,17 @@ function genereAccount($db, $nombre=20){
 
 		$mdp = hash("sha256", strtolower(substr("$nom", 0, 5) . substr("$prenom", 0, 5)) . $key);
 		$id = getID($db);
+		$id += 1;
 
 		if (verifName($db, $nom, $prenom) == True) {
 			while (verifNum($db, $telephone) == False) {
 				$telephone = randTelephone();
 			}
-			fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
+			$img = $id . ".jpg";
+			$url = $jsonArrayApiImg["faces"][0]["urls"][4][512];
+			$chemin = 'img/profil/' . $id . ".jpg";
+			file_put_contents($chemin, file_get_contents($url));
+			fputs($fichier, $id . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
 			echo "Le compte $nom $prenom a été créé.<br/>";
 			writeLogs($generalLog, "$nom $prenom;a été créé par l'administrateur");
 		}else{
@@ -326,15 +343,16 @@ function randAnniv(){
 
 	// Donne une filière aléatoire ou un groupe aléatoire (F = filière, G = groupe)
 function randForG($choix){
-
+	$jsonTextApiFiliere = file_get_contents("filiere.json");
+	$jsonArrayApiFiliere = json_decode($jsonTextApiFiliere, True);
+	$randFiliere = mt_rand(0, sizeof($jsonArrayApiFiliere)-1);
 	if ($choix == "filiere") {
-		$filieres = array("L1-MIPI","L2-MIPI", "L3-I", "LP RS", "LPI-RIWS");
-		$rand_filieres = array_rand($filieres, 2);
-		return $filieres[$rand_filieres[0]];
+		$filiere = $jsonArrayApiFiliere["filiere"][$randFiliere]["nom"];
+		return $filiere;
 	}elseif ($choix == "groupe") {
-		$groupes = array("A1","B2","LPI-1","LPI-2","LPI-3");
-		$rand_groupes = array_rand($groupes, 2);
-		return $groupes[$rand_groupes[0]];
+		$randGroupe = mt_rand(0,1);
+		$groupe = $jsonArrayApiFiliere["filiere"][$randFiliere]["groupe"][$randGroupe];
+		return $groupe;
 	}else{
 		return "Ce choix n'existe pas.";
 	}

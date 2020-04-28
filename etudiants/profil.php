@@ -191,7 +191,7 @@ if (isset($_SESSION["nom"])) {?>
 		<button onclick="modif('modif-general')" class="btn">Modification Générale</button>
 		<button onclick="modif('modif-password')" class="btn">Changement du mot de passe</button>
 		<button onclick="modif('modif-mail')" class="btn">Changement d'email</button>
-		<button onclick="modif('modif-avatar')" class="btn">Changement d'avatar</button>
+		<button onclick="modif('modif-avatar')" class="btn">Changement d'image</button>
 	</div>
 </div>
 
@@ -223,57 +223,8 @@ if (isset($_SESSION["nom"])) {?>
 					<td>
 						<select name="filiere">
 							<?php
-								switch ($filiere) {
-									case "L1-MIPI":
-									?>
-										<option selected="" value="L1-MIPI">L1-MIPI</option>
-										<option value="L2-MIPI">L2-MIPI</option>
-										<option value="L3-I">L3-I</option>
-										<option value="LP RS">LP RS</option>
-										<option value="LPI-RIWS">LPI-RIWS</option>
-									<?php
-										break;
-
-									case "L2-MIPI":
-									?>
-										<option value="L1-MIPI">L1-MIPI</option>
-										<option selected="" value="L2-MIPI">L2-MIPI</option>
-										<option value="L3-I">L3-I</option>
-										<option value="LP RS">LP RS</option>
-										<option value="LPI-RIWS">LPI-RIWS</option>
-									<?php
-										break;
-
-									case "L3-I":
-									?>
-										<option value="L1-MIPI">L1-MIPI</option>
-										<option value="L2-MIPI">L2-MIPI</option>
-										<option selected="" value="L3-I">L3-I</option>
-										<option value="LP RS">LP RS</option>
-										<option value="LPI-RIWS">LPI-RIWS</option>
-									<?php
-										break;
-
-									case "LP RS":
-									?>
-										<option value="L1-MIPI">L1-MIPI</option>
-										<option value="L2-MIPI">L2-MIPI</option>
-										<option value="L3-I">L3-I</option>
-										<option selected="" value="LP RS">LP RS</option>
-										<option value="LPI-RIWS">LPI-RIWS</option>
-									<?php
-										break;
-
-									case "LPI-RIWS":
-									?>
-										<option value="L1-MIPI">L1-MIPI</option>
-										<option value="L2-MIPI">L2-MIPI</option>
-										<option value="L3-I">L3-I</option>
-										<option value="LP RS">LP RS</option>
-										<option selected="" value="LPI-RIWS">LPI-RIWS</option>
-										<?php break; 
-								}?>
-						
+							$filiere
+							?>
 						</select>
 					</td>
 				</tr>

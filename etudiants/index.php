@@ -81,6 +81,10 @@ if (isset($_POST["form-inscription"])) {
 	}else{
 		$erreur = "Tous les champs doivent être complétés.";}
 }
+
+$jsonText = file_get_contents("filiere.json");
+$jsonArray = json_decode($jsonText, True);
+
 ?>
 <?php
 if (!isset($_SESSION["nom"])) {?>
@@ -132,144 +136,22 @@ if (!isset($_SESSION["nom"])) {?>
 		</tr>
 		<tr>
 			<td>
-				<select name="filiere">
-					<?php
-					if (isset($_POST["filiere"])) {
-						switch ($_POST["filiere"]) {
-							case "L1-MIPI":
-							?>
-								<option selected="" value="L1-MIPI">L1-MIPI</option>
-								<option value="L2-MIPI">L2-MIPI</option>
-								<option value="L3-I">L3-I</option>
-								<option value="LP RS">LP RS</option>
-								<option value="LPI-RIWS">LPI-RIWS</option>
-							<?php
-								break;
-
-							case "L2-MIPI":
-							?>
-								<option value="L1-MIPI">L1-MIPI</option>
-								<option selected="" value="L2-MIPI">L2-MIPI</option>
-								<option value="L3-I">L3-I</option>
-								<option value="LP RS">LP RS</option>
-								<option value="LPI-RIWS">LPI-RIWS</option>
-							<?php
-								break;
-
-							case "L3-I":
-							?>
-								<option value="L1-MIPI">L1-MIPI</option>
-								<option value="L2-MIPI">L2-MIPI</option>
-								<option selected="" value="L3-I">L3-I</option>
-								<option value="LP RS">LP RS</option>
-								<option value="LPI-RIWS">LPI-RIWS</option>
-							<?php
-								break;
-
-							case "LP RS":
-							?>
-								<option value="L1-MIPI">L1-MIPI</option>
-								<option value="L2-MIPI">L2-MIPI</option>
-								<option value="L3-I">L3-I</option>
-								<option selected="" value="LP RS">LP RS</option>
-								<option value="LPI-RIWS">LPI-RIWS</option>
-							<?php
-								break;
-
-							case "LPI-RIWS":
-							?>
-								<option value="L1-MIPI">L1-MIPI</option>
-								<option value="L2-MIPI">L2-MIPI</option>
-								<option value="L3-I">L3-I</option>
-								<option value="LP RS">LP RS</option>
-								<option selected="" value="LPI-RIWS">LPI-RIWS</option>
-							<?php
-								break;
-						}
-					}
-
-
-					else{
-					?>
-
+				<select onchange="json(this.id);" id="filiere" name="filiere">
 					<option selected="" disabled="">Choisir une filière</option>
-					<option value="L1-MIPI">L1-MIPI</option>
-					<option value="L2-MIPI">L2-MIPI</option>
-					<option value="L3-I">L3-I</option>
-					<option value="LP RS">LP RS</option>
-					<option value="LPI-RIWS">LPI-RIWS</option>
-
-				<?php } ?>
+					<?php 
+						for ($i=0; $i < sizeof($jsonArray["filiere"]); $i++) { 
+							$jsonNom = $jsonArray["filiere"][$i]["nom"];
+							?>
+							<option value="<?php echo $jsonNom ?>"><?php echo $jsonNom ?></option>
+							<?php
+						}
+					?>
 				</select>
 			</td>
 			<td>
 				<td>
-				<select name="groupe">
-
-					<?php
-						if (isset($_POST["groupe"])) {
-							switch ($_POST["groupe"]) {
-								case "A1":
-								?>
-									<option selected="" value="A1">A1</option>
-									<option value="B2">B2</option>
-									<option value="LPI-1">LPI-1</option>
-									<option value="LPI-2">LPI-2</option>
-									<option value="LPI-3">LPI-3</option>
-								<?php
-									break;
-
-								case "B2":
-								?>
-									<option value="A1">A1</option>
-									<option selected="" value="B2">B2</option>
-									<option value="LPI-1">LPI-1</option>
-									<option value="LPI-2">LPI-2</option>
-									<option value="LPI-3">LPI-3</option>
-								<?php
-									break;
-
-								case "LPI-1":
-								?>
-									<option value="A1">A1</option>
-									<option value="B2">B2</option>
-									<option selected="" value="LPI-1">LPI-1</option>
-									<option value="LPI-2">LPI-2</option>
-									<option value="LPI-3">LPI-3</option>
-								<?php
-									break;
-
-								case "LPI-2":
-								?>
-									<option value="A1">A1</option>
-									<option value="B2">B2</option>
-									<option value="LPI-1">LPI-1</option>
-									<option selected="" value="LPI-2">LPI-2</option>
-									<option value="LPI-3">LPI-3</option>
-								<?php
-									break;
-
-								case "LPI-3":
-								?>
-								<option value="A1">A1</option>
-								<option value="B2">B2</option>
-								<option value="LPI-1">LPI-1</option>
-								<option value="LPI-2">LPI-2</option>
-								<option selected="" value="LPI-3">LPI-3</option>
-								<?php
-									break;
-							}
-						}else{
-					?>
-
+				<select name="groupe" id="opt-groupe">
 					<option selected="" disabled="">Choisir un groupe</option>
-					<option value="A1">A1</option>
-					<option value="B2">B2</option>
-					<option value="LPI-1">LPI-1</option>
-					<option value="LPI-2">LPI-2</option>
-					<option value="LPI-3">LPI-3</option>
-
-				<?php } ?>
 				</select>
 				</td>
 			</td>
@@ -309,6 +191,26 @@ if (isset($erreur)) {
 	header("Location: profil");
 }
 ?>
+
+<script type="text/javascript">
+
+	function json(id){
+		var option = document.getElementById("opt-groupe");
+		var json = <?php echo $jsonText; ?>;
+		var nomFiliere = document.getElementById(id).value;
+
+		option.innerHTML = "<option selected=\"\" disabled=\"\">Choisir un groupe</option>";
+		for (var i = 0; i < json["filiere"].length; i++) {
+			if (nomFiliere == json["filiere"][i]["nom"]) {
+				break;
+			}
+		}
+		for (var j = 0; j < json["filiere"][i]["groupe"].length; j++) {
+			option.innerHTML += "<option value=" + json["filiere"][i]["groupe"][j] + ">" + json["filiere"][i]["groupe"][j] + "</option>";
+		}
+		
+	}
+</script>
 <script src="js/script.js"></script>
 </body>
 </html>

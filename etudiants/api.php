@@ -79,10 +79,10 @@ if (isset($_POST["form-recup-key"])) {
 					Permet de récupérer les informations des étudiants de la filière souhaitée.
 					<h4 class="h4-doc">Appel d'API:</h4>
 						<code class="bold">
-							<?php echo $protocol ?>://<?php echo $url ?>/api?filiere={nom de la filière}&key={votre clé d'api}
+							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere={nom de la filière}&key={votre clé d'api}
 						</code>
 					<h4 class="h4-doc">Exemple d'appel d'API:</h4>
-						<a href="exemple?filiere=LPI-RIWS&key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/api?filiere=LPI-RIWS</a>
+						<a href="exemple?filiere=LPI-RIWS&key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere=LPI-RIWS</a>
 					<h4>Réponse d'API:</h4>
 					<pre>{
   "LPI-RIWS": {
@@ -106,7 +106,7 @@ if (isset($_POST["form-recup-key"])) {
       	"naissance": "18/11/2001"
       }
   },
-  "B2": {
+  "A2": {
     "1": {
         "ID": 13,
       	"nom": "Anguille",
@@ -126,10 +126,10 @@ if (isset($_POST["form-recup-key"])) {
 					Permet de récupérer les informations des étudiants du groupe souhaité.
 					<h4 class="h4-doc">Appel d'API:</h4>
 					<code class="bold">
-							<?php echo $protocol ?>://<?php echo $url ?>/api?groupe={nom du groupe}&key={votre clé d'api}
+							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe={nom du groupe}&key={votre clé d'api}
 						</code>
 					<h4 class="h4-doc">Exemple d'appel d'API:</h4>
-						<a href="exemple?groupe=B2&key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/api?groupe=B2</a>
+						<a href="exemple?groupe=B2&key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe=B2</a>
 					<h4>Réponse d'API:</h4>
 <pre>{
   "B2": {
@@ -142,10 +142,8 @@ if (isset($_POST["form-recup-key"])) {
       	"telephone": "0798765432",
       	"image": "defaut.png",
       	"naissance": "10/09/1999"
-      }
-  },
-  "L3-I": {
-    "1": {
+      },
+      "2": {
         "ID": 26,
       	"nom": "Pillot",
       	"prenom": "Christophe",
@@ -154,7 +152,7 @@ if (isset($_POST["form-recup-key"])) {
       	"image": "defaut.png",
       	"naissance": "09/07/1998"
       },
-    "2": {
+      "3": {
         "ID": 12,
       	"nom": "Chaise",
       	"prenom": "Marie",
@@ -163,7 +161,8 @@ if (isset($_POST["form-recup-key"])) {
       	"image": "defaut.png",
       	"naissance": "14/10/1997"
       }
-  },
+    },
+  }
 }
 </pre>
 				</div>
@@ -217,6 +216,43 @@ if (isset($_POST["form-recup-key"])) {
 						</li>
 					</ul>
 				</div>
+				<h2 class="h2-doc">Par filière et par groupe</h2>
+					<div class="filiere">
+						<h4 class="h4-doc">Description:</h4>
+						Permet de récupérer les informations des étudiants de la filière et du groupe souhaité.
+						<h4 class="h4-doc">Appel d'API:</h4>
+					<code class="bold">
+							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe={nom du groupe}&key={votre clé d'api}
+						</code>
+					<h4 class="h4-doc">Exemple d'appel d'API:</h4>
+						<a href="exemple?filiere=L2-MIPI&groupe=C1&key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere=L2-MIPI&groupe=C1</a>
+						<h4>Réponse d'API:</h4>
+<pre>{
+  "L2-MIPI": {
+    "C1": {
+      "1": {
+        "ID": 4,
+      	"nom": "Savoie",
+      	"prenom": "Nadine",
+      	"email": "NadineSavoie@hotmail.com",
+      	"telephone": "0769438758",
+      	"image": "defaut.png",
+      	"naissance": "17/03/1998"
+      },
+      "2": {
+        "ID": 21,
+      	"nom": "Mercier",
+      	"prenom": "Olivier",
+      	"email": "OlivierMercier@hotmail.com",
+      	"telephone": "0794911097",
+      	"image": "defaut.png",
+      	"naissance": "08/02/2000"
+      }
+    },
+  }
+}
+</pre>
+					</div>
 				<h2 class="h2-doc" id="image">Utiliser les images</h2>
 				<div class="image">
 					<h4 class="h4-doc">Description:</h4>

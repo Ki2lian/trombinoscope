@@ -24,7 +24,6 @@ h1.title{
     font-family: sans-serif;
     margin-top: auto;
     margin-bottom: auto;
-    color: #7ed6df;
     font-size: 35px;
     margin-left: 5%;
 }
@@ -358,6 +357,15 @@ pre {
 
 .input-api{
     width: 80%;
+}
+
+.a-menunav{
+    text-decoration: none;
+    color: #7ed6df;
+}
+
+.a-menunav:hover{
+    color: #7ea5df;
 }
 /*
 footer {
