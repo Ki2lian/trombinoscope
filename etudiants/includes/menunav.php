@@ -6,7 +6,7 @@
         ?>
         <li class="menu"><a href="index">Accueil</a>
         </li>
-        <li class="menu"><a href="api.php">Api</a>
+        <li class="menu"><a href="api">Api</a>
         </li>
         <li class="menu"><a href="connexion">Connexion</a>
         </li>

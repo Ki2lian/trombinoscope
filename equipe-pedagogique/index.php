@@ -128,7 +128,7 @@ if (isset($inscriptionOK)) {
 </div>
 <?php
 }else{
-	//header("Location: api");
+	header("Location: api");
 }
 ?>
 <script src="js/script.js"></script>

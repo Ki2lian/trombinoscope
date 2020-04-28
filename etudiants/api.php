@@ -1,6 +1,39 @@
 <?php include("includes/function.php"); include("includes/config.php");
 
+if (isset($_POST["form-demand-key"])) {
+	$mail = htmlspecialchars($_POST["mail"]);
+	$key = randomKey(32);
+	$mdp = hash("sha256", $_POST["mdp"] . $key);
+	$mdp2 = hash("sha256", $_POST["mdp2"] . $key);
+	$id = getID($dbApi);
 
+
+	if (!empty($_POST["mail"]) && !empty($_POST["mdp"]) && !empty($_POST["mdp2"])) {
+		if ($mail == $mail2) {
+			if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
+				if (verifMail($dbApi, $mail) == True) {
+					if (strlen($_POST["mdp"]) >= 8 || strlen($_POST["mdp2"]) >= 8) {
+						if ($mdp == $mdp2) {
+							$fichier = fopen($dbApi, "a+");
+							fputs($fichier, $id+1 . ";" . $key . ";" . $mdp . ";" . $mail . ";" . strftime("%H", time()) . ";0" . "\n");
+							$message = "Bonjour, vous nous avez fait la demande pour une clé d'api, vous pourrez l'utiliser en suivant la documentation en cliquant sur ce lien https://etudiants.alwaysdata.net/api. Voici votre clé: $key";
+							writeLogs($generalLog, "$mail;a demandé une clé d'API, sa clé: $key");
+							mail($mail, "Clé d'API", $message);
+							$inscriptionOK = "Vous avez obtenu votre clé dans votre mail.";
+						}else{
+							$erreur = "Les mots de passe ne correspondent pas.";}
+					}else{
+						$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}
+				}else{
+					$erreur = "L'adresse email a déjà été utilisée.";}
+			}else{
+				$erreur = "L'adresse email n'est pas valide.";}
+		}else{
+			$erreur = "Les adresses email ne correspondent pas.";}
+	}else{
+		$erreur = "Tous les champs doivent être complétés.";}
+	
+}
 
 ?>
 <!DOCTYPE html>
@@ -222,10 +255,10 @@
 					</tr>
 					<tr>
 						<td>
-							<input class="input-api" title="Votre mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Mot de passe" name="mdp" id="password" required="required" aria-required="true" minlength="8"/>
+							<input class="input-api" title="Votre mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Mot de passe" name="mdp" id="password3" required="required" aria-required="true" minlength="8"/>
 						</td>
 						<td>
-							<img id="eyes_mdp1" style="height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('password'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
+							<img id="eyes_mdp1" style="height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('password3'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
 						</td>
 					</tr>
 				</table>
