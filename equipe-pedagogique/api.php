@@ -1,10 +1,7 @@
 <?php include("includes/config.php");
 
-$jsonText = file_get_contents("https://etudiants.alwaysdata.net/filiere.json");
-$jsonArray = json_decode($jsonText,True);
-
-
-// print_r($jsonArray);
+$jsonTextApiFiliere = file_get_contents("https://etudiants.alwaysdata.net/filiere.json");
+$jsonArrayApiFiliere = json_decode($jsonTextApiFiliere, True);
 
 ?>
 <!DOCTYPE html>
@@ -34,39 +31,85 @@ $jsonArray = json_decode($jsonText,True);
 	.btn:hover {
 	    background-color: #128ed5;
 	}
+
+	img{
+		height: 150px;
+	}
+
+	div{
+		text-align: center;
+		float: left;
+		border-radius: 5%;
+		margin: 2%;
+		font-weight: bold;
+	}
 </style>
 <body>
 
 <header>
   <?php include "includes/menunav.php" ?>
 </header>
-	<form method="get">
-		<select name="filiere">
-			<option selected="" disabled="">Choisir une filière</option>
-				<?php 
-					for ($i=0; $i < sizeof($jsonArray["filiere"]); $i++) { 
-						$jsonNom = $jsonArray["filiere"][$i]["nom"];
-						?>
-						<option value="<?php echo $jsonNom ?>"><?php echo $jsonNom ?></option>
-						<?php
-					}
-				?>			
-		</select name="groupe" id="opt-groupe">
-		<select>
-			<option selected="" disabled="">Choisir un groupe</option>
-		</select>
+<?php
+if (isset($_POST["form-trombinoscope"])) {
+	if (!empty($_POST["filiere"]) && !empty($_POST["groupe"])) {
+		$filiere = $_POST["filiere"];
+		$groupe = $_POST["groupe"];
+		$key = "UikPqwDB8c1SHlFAn6FoMryc3610OMbZ";
+		$jsonTextApiTrombi = file_get_contents("https://etudiants.alwaysdata.net/test_api?groupe=$groupe&filiere=$filiere&key=$key");
+		$jsonArrayApiTrombi = json_decode($jsonTextApiTrombi, True);
+		if (isset($jsonArrayApiTrombi[$filiere][$groupe])) {
+			for ($i=1; $i <= sizeof($jsonArrayApiTrombi[$filiere][$groupe]); $i++) { 
+				$info = $jsonArrayApiTrombi[$filiere][$groupe][$i];
+				echo "<div>";
+				echo "<img src=\"https://etudiants.alwaysdata.net/img/profil/" . $info["image"] . "\" alt=\"Erreur\"/><br/>";
+				echo $info["nom"] . " " . $info["prenom"];
+				echo "</div>";
+			}
+		}
+	}else{
+		$erreur = "Tous les champs doivent être complétés.";}
+}
+?>
 
-		<input type="submit" value="TEST"/>
+
+<?php
+if (!isset($_POST["form-trombinoscope"])) {
+?>
+	<form method="post">
+		<table>
+			<tr>
+				<td>
+					<select onchange="json(this.id);" id="filiere" name="filiere">
+						<option selected="" disabled="">Choisir une filière</option>
+							<?php 
+								for ($i=0; $i < sizeof($jsonArrayApiFiliere["filiere"]); $i++) { 
+									$jsonNom = $jsonArrayApiFiliere["filiere"][$i]["nom"];
+									?>
+									<option value="<?php echo $jsonNom ?>"><?php echo $jsonNom ?></option>
+									<?php
+								}
+							?>			
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<select name="groupe" id="opt-groupe">
+						<option selected="" disabled="">Choisir un groupe</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<input type="submit" value="Valider" name="form-trombinoscope" />
 	</form>
-
+<?php } ?>
 <script type="text/javascript">
 
 	function json(id){
 		var option = document.getElementById("opt-groupe");
 		var json = <?php echo $jsonTextApiFiliere; ?>;
 		var nomFiliere = document.getElementById(id).value;
-
-		option.innerHTML = "<option selected=\"\" disabled=\"\">Choisir un groupe</option>";
+		option.innerHTML = "";
 		for (var i = 0; i < json["filiere"].length; i++) {
 			if (nomFiliere == json["filiere"][i]["nom"]) {
 				break;

@@ -249,6 +249,15 @@ select::-ms-expand{
 	display : inline;
 	font-weight: bold;
 }
+
+.a-menunav{
+    text-decoration: none;
+    color: #7ed6df;
+}
+
+.a-menunav:hover{
+    color: #7ea5df;
+}
 /*
 footer {
 	margin-top: auto;

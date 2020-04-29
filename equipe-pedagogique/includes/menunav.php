@@ -1,4 +1,4 @@
-<h1 class="title">Equipe pédagogique</h1>
+<h1 class="title"><a class="a-menunav" href="index">Equipe pédagogique</a></h1>
 <nav>
     <ul>
 <?php
