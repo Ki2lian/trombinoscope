@@ -221,68 +221,53 @@ if (isset($_SESSION["nom"])) {?>
 				</tr>
 				<tr>
 					<td>
-						<select name="filiere">
-							<?php
-							$filiere
+						<select name="filiere" onchange="json(this.id);" id="filiere">
+							<?php 
+							for ($i=0; $i < sizeof($jsonArrayApiFiliere["filiere"]); $i++) { 
+								$jsonNom = $jsonArrayApiFiliere["filiere"][$i]["nom"];
+								if ($jsonNom == $filiere) {
+									$posFiliere = $i;
+									?>
+									<option value="<?php echo $jsonNom ?>"><?php echo $jsonNom ?></option>
+									<?php
+								}
+							}
+
+							for ($i=0; $i < sizeof($jsonArrayApiFiliere["filiere"]); $i++) { 
+								$jsonNom = $jsonArrayApiFiliere["filiere"][$i]["nom"];
+								if ($jsonNom != $filiere) {
+									?>
+									<option value="<?php echo $jsonNom ?>"><?php echo $jsonNom ?></option>
+									<?php
+								}
+							}
 							?>
 						</select>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<select name="groupe">
+						<select name="groupe" id="opt-groupe">
 							<?php
-									switch ($groupe) {
-										case "A1":
+								for ($j=0; $j < sizeof($jsonArrayApiFiliere["filiere"][$posFiliere]["groupe"]); $j++) {
+									$jsonGroupe = $jsonArrayApiFiliere["filiere"][$posFiliere]["groupe"][$j];
+									if ($jsonGroupe == $groupe) {
 										?>
-											<option selected="" value="A1">A1</option>
-											<option value="B2">B2</option>
-											<option value="LPI-1">LPI-1</option>
-											<option value="LPI-2">LPI-2</option>
-											<option value="LPI-3">LPI-3</option>
+										<option value="<?php echo $jsonGroupe ?>"><?php echo $jsonGroupe ?></option>
 										<?php
-											break;
+									}
+								}
 
-										case "B2":
+								for ($j=0; $j < sizeof($jsonArrayApiFiliere["filiere"][$posFiliere]["groupe"]); $j++) {
+									$jsonGroupe = $jsonArrayApiFiliere["filiere"][$posFiliere]["groupe"][$j];
+									if ($jsonGroupe != $groupe) {
 										?>
-											<option value="A1">A1</option>
-											<option selected="" value="B2">B2</option>
-											<option value="LPI-1">LPI-1</option>
-											<option value="LPI-2">LPI-2</option>
-											<option value="LPI-3">LPI-3</option>
+										<option value="<?php echo $jsonGroupe ?>"><?php echo $jsonGroupe ?></option>
 										<?php
-											break;
-
-										case "LPI-1":
-										?>
-											<option value="A1">A1</option>
-											<option value="B2">B2</option>
-											<option selected="" value="LPI-1">LPI-1</option>
-											<option value="LPI-2">LPI-2</option>
-											<option value="LPI-3">LPI-3</option>
-										<?php
-											break;
-
-										case "LPI-2":
-										?>
-											<option value="A1">A1</option>
-											<option value="B2">B2</option>
-											<option value="LPI-1">LPI-1</option>
-											<option selected="" value="LPI-2">LPI-2</option>
-											<option value="LPI-3">LPI-3</option>
-										<?php
-											break;
-
-										case "LPI-3":
-										?>
-										<option value="A1">A1</option>
-										<option value="B2">B2</option>
-										<option value="LPI-1">LPI-1</option>
-										<option value="LPI-2">LPI-2</option>
-										<option selected="" value="LPI-3">LPI-3</option>
-										<?php
-											break;
-									}?>
+									}
+								}
+							
+							?>
 						</select>
 					</td>
 				</tr>
@@ -462,6 +447,25 @@ if (isset($msg)) {
 </script>
 
 <script src="js/script.js"></script>
+<script type="text/javascript">
+
+	function json(id){
+		var option = document.getElementById("opt-groupe");
+		var json = <?php echo $jsonTextApiFiliere; ?>;
+		var nomFiliere = document.getElementById(id).value;
+
+		option.innerHTML = "";
+		for (var i = 0; i < json["filiere"].length; i++) {
+			if (nomFiliere == json["filiere"][i]["nom"]) {
+				break;
+			}
+		}
+		for (var j = 0; j < json["filiere"][i]["groupe"].length; j++) {
+			option.innerHTML += "<option value=" + json["filiere"][i]["groupe"][j] + ">" + json["filiere"][i]["groupe"][j] + "</option>";
+		}
+		
+	}
+</script>
 
 </body>
 </html>

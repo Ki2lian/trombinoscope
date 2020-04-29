@@ -41,7 +41,7 @@ $jsonArray = json_decode($jsonText,True);
   <?php include "includes/menunav.php" ?>
 </header>
 	<form method="get">
-		<select>
+		<select name="filiere">
 			<option selected="" disabled="">Choisir une filière</option>
 				<?php 
 					for ($i=0; $i < sizeof($jsonArray["filiere"]); $i++) { 
@@ -51,11 +51,33 @@ $jsonArray = json_decode($jsonText,True);
 						<?php
 					}
 				?>			
+		</select name="groupe" id="opt-groupe">
+		<select>
+			<option selected="" disabled="">Choisir un groupe</option>
 		</select>
 
 		<input type="submit" value="TEST"/>
 	</form>
-	
+
+<script type="text/javascript">
+
+	function json(id){
+		var option = document.getElementById("opt-groupe");
+		var json = <?php echo $jsonTextApiFiliere; ?>;
+		var nomFiliere = document.getElementById(id).value;
+
+		option.innerHTML = "<option selected=\"\" disabled=\"\">Choisir un groupe</option>";
+		for (var i = 0; i < json["filiere"].length; i++) {
+			if (nomFiliere == json["filiere"][i]["nom"]) {
+				break;
+			}
+		}
+		for (var j = 0; j < json["filiere"][i]["groupe"].length; j++) {
+			option.innerHTML += "<option value=" + json["filiere"][i]["groupe"][j] + ">" + json["filiere"][i]["groupe"][j] + "</option>";
+		}
+		
+	}
+</script>
 
 </body>
 </html>

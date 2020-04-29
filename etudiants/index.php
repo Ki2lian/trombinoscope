@@ -82,9 +82,6 @@ if (isset($_POST["form-inscription"])) {
 		$erreur = "Tous les champs doivent être complétés.";}
 }
 
-$jsonText = file_get_contents("filiere.json");
-$jsonArray = json_decode($jsonText, True);
-
 ?>
 <?php
 if (!isset($_SESSION["nom"])) {?>
@@ -139,8 +136,8 @@ if (!isset($_SESSION["nom"])) {?>
 				<select onchange="json(this.id);" id="filiere" name="filiere">
 					<option selected="" disabled="">Choisir une filière</option>
 					<?php 
-						for ($i=0; $i < sizeof($jsonArray["filiere"]); $i++) { 
-							$jsonNom = $jsonArray["filiere"][$i]["nom"];
+						for ($i=0; $i < sizeof($jsonArrayApiFiliere["filiere"]); $i++) { 
+							$jsonNom = $jsonArrayApiFiliere["filiere"][$i]["nom"];
 							?>
 							<option value="<?php echo $jsonNom ?>"><?php echo $jsonNom ?></option>
 							<?php
@@ -196,7 +193,7 @@ if (isset($erreur)) {
 
 	function json(id){
 		var option = document.getElementById("opt-groupe");
-		var json = <?php echo $jsonText; ?>;
+		var json = <?php echo $jsonTextApiFiliere; ?>;
 		var nomFiliere = document.getElementById(id).value;
 
 		option.innerHTML = "<option selected=\"\" disabled=\"\">Choisir un groupe</option>";

@@ -350,7 +350,7 @@ function randForG($choix){
 		$filiere = $jsonArrayApiFiliere["filiere"][$randFiliere]["nom"];
 		return $filiere;
 	}elseif ($choix == "groupe") {
-		$randGroupe = mt_rand(0,1);
+		$randGroupe = mt_rand(0,sizeof($jsonArrayApiFiliere["filiere"][$randFiliere]["groupe"])-1);
 		$groupe = $jsonArrayApiFiliere["filiere"][$randFiliere]["groupe"][$randGroupe];
 		return $groupe;
 	}else{
