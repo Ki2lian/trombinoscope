@@ -11,6 +11,7 @@ if (!isset($_SESSION["id"]) && isset($_GET["prenom"], $_GET["nom"], $_GET["key"]
 		writeLogs($generalLog, "$nom $prenom;confirmation du compte");
 	}elseif (VerifConfirmation($db, $nom, $prenom, $key) == 3) {
 		$cEchec = "Le compte a déjà été validé. Vous allez être redirigé à la page de connexion dans 5 secondes.";
+		writeLogs($erreurLog, "anonyme;$pageLog;Le compte a déjà été validé;$nom $prenom");
 		header('refresh:5;url=connexion');
 	}else{
 		header("location: index");}

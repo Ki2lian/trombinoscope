@@ -11,6 +11,9 @@
 	$generalLog = "general.log"; // Fichier des logs principaux y seront notés (inscription/connexion/déconnexion)
 	$modifLog = "modif.log"; // Fichier des logs des modifications du profil
 	$apiLog = "api.log"; // Fichier des logs contenant toutes les requêtes de l'api
+	$erreurLog = "erreur.log"; // Ficher des logs contenant toutes les erreurs
+	$pageLog = $_SERVER['SCRIPT_NAME']; // Variable contenant la page actuelle du visiteur (utile pour les erreurs de logs)
+
 
 	// Ne pas modifier, cela permet de vérifier si la page actuelle est en https ou non
 	if (isset($_SERVER['HTTPS'])) {

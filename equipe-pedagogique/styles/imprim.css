@@ -1,4 +1,4 @@
-header, input, .input-api, .input-api:hover{
+header, input, .input-api, .input-api:hover, select{
 	display: none;
 }
 
@@ -13,11 +13,6 @@ div{
 	width: 100%;
 
 }
-
-/*.div-api, img{
-	width: 120px;
-	text-align: center;
-}*/
 
 .div-api{
 	margin-right: 15px;

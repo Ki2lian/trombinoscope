@@ -57,29 +57,29 @@ if (isset($_POST["form-inscription"])) {
 													header('refresh:3;url=connexion.php');
 
 												}else{
-													$erreur = "Les mots de passe ne correspondent pas.";}
+													$erreur = "Les mots de passe ne correspondent pas."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}
 											}else{
-												$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}
+												$erreur = "Votre mot de passe doit contenir au moins 8 caractères."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}
 										}else{
-											$erreur = "Il y a un problème avec la date de naissance.";}
+											$erreur = "Il y a un problème avec la date de naissance."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;$naissance");}
 									}else{
-										$erreur = "$telephone a déjà été utilisé, $contactAdmin.";}
+										$erreur = "$telephone a déjà été utilisé, $contactAdmin."; writeLogs($erreurLog, "anonyme;$pageLog;Le numéro existe déjà.;$telephone");}
 								}else{
-									$erreur = "$telephone n'est pas un numéro valide.";}
+									$erreur = "$telephone n'est pas un numéro valide."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;$telephone");}
 							}else{
-								$erreur = "L'adresse email a déjà été utilisée, $contactAdmin.";}
+								$erreur = "L'adresse email a déjà été utilisée, $contactAdmin."; writeLogs($erreurLog, "anonyme;$pageLog;L'adresse email a déjà été utilisée.;$mail");}
 						}else{
-							$erreur = "L'adresse email n'est pas valide.";}
+							$erreur = "L'adresse email n'est pas valide."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;$mail");}
 					}else{
-						$erreur = "Les adresses email ne correspondent pas.";}
+						$erreur = "Les adresses email ne correspondent pas."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}
 				}else{
-					$erreur = "Le nom et prénom ont déjà été utilisé, $contactAdmin.";}
+					$erreur = "Le nom et prénom ont déjà été utilisés, $contactAdmin."; writeLogs($erreurLog, "anonyme;$pageLog;Le nom et prénom ont déjà été utilisé.;$nom $prenom");}
 			}else{
-				$erreur = "Le prénom ne peut pas avoir de caractères spéciaux ou de chiffres.";}
+				$erreur = "Le prénom ne peut pas avoir de caractères spéciaux ou de chiffres."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;$prenom");}
 		}else{
-			$erreur = "Le nom ne peut pas avoir de caractères spéciaux ou de chiffres.";}
+			$erreur = "Le nom ne peut pas avoir de caractères spéciaux ou de chiffres."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;nom");}
 	}else{
-		$erreur = "Tous les champs doivent être complétés.";}
+		$erreur = "Tous les champs doivent être complétés."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}
 }
 
 ?>

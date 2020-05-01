@@ -21,15 +21,15 @@ if (isset($_POST["form-demand-key"])) {
 						//$inscriptionOK = "Vous avez obtenu votre clé dans votre mail.";
 						$inscriptionOK = "Votre clé: $key";
 					}else{
-						$erreur = "Les mots de passe ne correspondent pas.";}
+						$erreur = "Les mots de passe ne correspondent pas."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}
 				}else{
-					$erreur = "Votre mot de passe doit contenir au moins 8 caractères.";}
+					$erreur = "Votre mot de passe doit contenir au moins 8 caractères."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}
 			}else{
-				$erreur = "L'adresse email a déjà été utilisée.";}
+				$erreur = "L'adresse email a déjà été utilisée."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;$mail");}
 		}else{
-			$erreur = "L'adresse email n'est pas valide.";}
+			$erreur = "L'adresse email n'est pas valide."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;$mail");}
 	}else{
-		$erreur = "Tous les champs doivent être complétés.";}
+		$erreur = "Tous les champs doivent être complétés."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur");}
 }
 
 if (isset($_POST["form-recup-key"])) {

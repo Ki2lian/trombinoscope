@@ -49,7 +49,7 @@ yr=theyear;mo=themonth;da=theday;hr=thehour;min=themin;sec=thesec
 ////////// CONFIGUREZ LE COMPTEUR CI-DESSOUS //////////////////
  
 // 1°) Configurez la date dans le futur dans le format ANNEE, MOIS, JOUR, HEURES sur 24h (0=minuit,23=11pm), MINUTES, SECONDES
-setcountdown(2020,05,10,23,59,59)
+setcountdown(2020,05,07,09,00,00)
  
 // 2°) Changez les deux textes ci-dessous. Le premier pour annoncer l'évènement, le second qui s'affichera à la fin du compte à rebours.
 var occasion=" la fin du projet"

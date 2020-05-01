@@ -18,11 +18,11 @@ if (isset($_POST["form-connexion"])) {
 				writeLogs($generalLog, "$tableau[1] $tableau[2];s'est connecté");
 				header("Location: api");
 			}else{
-				$erreur = "L'email ou le mot de passe est incorrect !";}
+				$erreur = "L'email ou le mot de passe est incorrect !"; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;$mail");}
 		}else{
-			$erreur = "L'adresse email n'est pas valide.";}
+			$erreur = "L'adresse email n'est pas valide."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;$mail");}
 	}else{
-		$erreur = "Tous les champs doivent être complétés.";}
+		$erreur = "Tous les champs doivent être complétés."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}
 }
 ?>
 <?php
