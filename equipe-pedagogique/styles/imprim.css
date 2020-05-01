@@ -1,0 +1,38 @@
+header, input, .input-api, .input-api:hover{
+	display: none;
+}
+
+.h2-api{
+	text-align: center;
+}
+
+div{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: 100%;
+
+}
+
+/*.div-api, img{
+	width: 120px;
+	text-align: center;
+}*/
+
+.div-api{
+	margin-right: 15px;
+	width: 100px;
+	height: 140px;
+	margin-bottom: 5px;
+}
+
+img{
+	width: 90%;
+}
+
+p{
+	text-align: center;
+}
+.profil-info{
+	color: white;
+}

@@ -169,6 +169,10 @@ select::-ms-expand{
 	color:#7ed6df;
 }
 
+.submit-form:hover{
+    color: #7ea5df;
+}
+
 /* Styles concernant la page de profil */
 .img-profil{
 	width: 150px;
@@ -271,9 +275,6 @@ select::-ms-expand{
 	display : inline;
 	font-weight: bold;
 }
-
-
-
 
 .container{
     width:100%;

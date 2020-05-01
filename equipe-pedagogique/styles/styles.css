@@ -94,6 +94,12 @@ nav > ul > li:hover > a{
     width: 50%;
 }
 
+.formulaire-trombi{
+    margin-left: 38%;
+    margin-top: 10%;
+    width: 50%;
+}
+
 .form-modif{
 	margin-left: 2%;
 }
@@ -109,12 +115,8 @@ td > input, .uploadFile{
   	font-size: 25px;
 }
 
-td > input{
+td > input, td > select{
 	width: 100%;
-}
-
-.uploadFile{
-  	width: 31%;
 }
 
 #mdp, #mdp3, #mdp4{
@@ -157,9 +159,8 @@ select::-ms-expand{
 	display: none;
 }
 
-.submit-form{
+.submit-form, .submit-form-trombi{
 	margin-top: 3%;
-	margin-left: 30%;
 	width:25%;
 	cursor:pointer;
 	border:none;
@@ -171,74 +172,18 @@ select::-ms-expand{
 	color:#7ed6df;
 }
 
-/* Styles concernant la page de profil */
-.img-profil{
-	width: 150px;
-	height: 150px;
-	position: absolute;
-    -webkit-box-shadow: 0 1px 0 2px rgba(0,0,0,.3);
-    box-shadow: 0 1px 0 2px rgba(0,0,0,.3);
-    background-color: #02353c;
-    border: 2px solid #267b91;
-    border-radius: 50%;
-    z-index: 11;
-    background-position: center 1px;
-}
-
-.row{
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
+.submit-form{
     margin-left: 30%;
 }
-
-.box{
-    overflow: hidden;
-    word-wrap: break-word;
-    margin-bottom: 15px;
-    border-radius: 3px;
+.submit-form-trombi{
+    margin-left: 10%;
 }
 
-.profil_framed{
-    border-radius: 6px;
-    padding: 5px 1px 5px 57px;
-    width: auto;
-    position: relative;
-    border: dashed 1.2px #181818;
-    /*margin: 13px 1px 5px 51px;*/
-    margin: 13px 1px 5px 100px;
+.submit-form:hover, .submit-form-trombi:hover{
+    color: #7ea5df;
 }
 
-.profil_name {
-    font-size: 30px;
-    color: #30336b;
-    text-shadow: 0 1px 2px #000;
-    padding-left: 49px;
-    padding: 0;
-    margin: 0;
-}
 
-.profil_about {
-    display: block;
-    padding: 5px;
-    margin-left: 45%;
-}
-
-.col-md-4 {
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 33.3333333333%;
-    flex: 0 0 33.3333333333%;
-    max-width: 33.3333333333%;
-}
-
-#center{
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: block;
-    margin-left: 30%;
-}
 
 .underline{
 	display : inline;
@@ -257,6 +202,52 @@ select::-ms-expand{
 
 .a-menunav:hover{
     color: #7ea5df;
+}
+
+img{
+    height: 150px;
+}
+
+.h2-api{
+    text-align: center;
+    display: block;
+}
+
+.input-api{
+    margin-left: 45%;
+    background-color: #30336b;
+    border: none;
+    color: #7ed6df;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.input-api:hover{
+    color: #7ea5df;
+}
+
+.div-api{
+    margin: 1%;
+    font-weight: bold;
+    width: 11%;
+}
+
+p{
+    text-align: center;
+    word-break: break-all;
+    width: 80%;
+}
+
+.container-api{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
 }
 /*
 footer {
