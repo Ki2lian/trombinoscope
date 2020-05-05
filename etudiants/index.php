@@ -105,30 +105,28 @@ if (!isset($_SESSION["nom"])) {?>
 			<td>
 				<input title="Votre nom" type="text" maxlength="20" placeholder="Nom" id="nom" name="nom" required="required" aria-required="true" value="<?php if(isset($nom)){echo($nom);} ?>"/>
 			</td>
+
 			<td>
-				<td>
 				<input title="Votre prénom" type="text" maxlength="20" placeholder="Prénom" id="prenom" name="prenom" required="required" aria-required="true" value="<?php if(isset($prenom)){echo($prenom);} ?>"/>
-				</td>
 			</td>
+
 		</tr>
 		<tr>
 			<td>
 				<input title="Votre email" type="email" placeholder="Email" id="mail" name="mail" required="required" aria-required="true" value="<?php if(isset($mail)){echo($mail);} ?>"/>
 			</td>
+
 			<td>
-				<td>
 				<input title="Votre email de confirmation" type="email" placeholder="Email de confirmation" id="mail2" name="mail2" required="required" aria-required="true" value="<?php if(isset($mail2)){echo($mail2);} ?>"/>
-				</td>
 			</td>
 		</tr>
 		<tr>
 			<td>
 				<input title="Votre numéro de téléphone portable" type="text" placeholder="Numéro de téléphone portable" id="numero" name="numero" required="required" aria-required="true" value="<?php if(isset($_POST["numero"]) && $telephone != ""){echo($_POST["numero"]);} ?>" pattern="0[1-68]([-. ]?[0-9]{2}){4}"/>
 			</td>
+
 			<td>
-				<td>
-				<input title="Date de naissance" type="date" value="<?php if(isset($_POST["anniv"])){ echo($_POST["anniv"]); } ?>" name="anniv" required="required" aria-required="true"/>
-				</td>
+				<input title="Date de naissance" type="date" value="<?php if(isset($_POST["anniv"])){ echo($_POST["anniv"]); } ?>" name="anniv" required="required"/>
 			</td>
 		</tr>
 		<tr>
@@ -145,12 +143,11 @@ if (!isset($_SESSION["nom"])) {?>
 					?>
 				</select>
 			</td>
+
 			<td>
-				<td>
 				<select name="groupe" id="opt-groupe">
 					<option selected="" disabled="">Choisir un groupe</option>
 				</select>
-				</td>
 			</td>
 		</tr>
 		<tr>
@@ -158,13 +155,15 @@ if (!isset($_SESSION["nom"])) {?>
 				<input title="Votre mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Mot de passe" id="mdp" name="mdp" required="required" aria-required="true" minlength="8"/>
 			</td>
 			<td>
-				<img id="eyes_mdp1" style="padding-right: 5px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
+				<img id="eyes_mdp1" style="width: 50px; cursor: pointer;" onclick="showPassword('mdp'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
 			</td>
+		</tr>
+		<tr>
 			<td>
 				<input title="Votre mot de passe de confirmation doit contenir au minimum 8 caractères" type="password" placeholder="Mot de passe de confirmation" id="mdp2" name="mdp2" required="required" aria-required="true" minlength="8" />
 			</td>
 			<td>
-				<img id="eyes_mdp2" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp2'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
+				<img id="eyes_mdp2" style="width: 50px; cursor: pointer;" onclick="showPassword('mdp2'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
 			</td>
 		</tr>
 	</table>
@@ -189,7 +188,7 @@ if (isset($erreur)) {
 }
 ?>
 
-<script type="text/javascript">
+<script>
 
 	function json(id){
 		var option = document.getElementById("opt-groupe");

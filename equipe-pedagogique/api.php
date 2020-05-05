@@ -2,7 +2,9 @@
 
 $jsonTextApiFiliere = file_get_contents("https://etudiants.alwaysdata.net/filiere.json");
 $jsonArrayApiFiliere = json_decode($jsonTextApiFiliere, True);
-$key = "UikPqwDB8c1SHlFAn6FoMryc3610OMbZ";
+$key = "QTAG6uFg7Ta62PIFFRDm3Kp82kkmxVvh";
+
+if (isset($_SESSION["id"])) {
 
 if (!empty($_POST["filiere"]) && !empty($_POST["groupe"])) {
 	$tabTrombi["filière"] = $_POST["filiere"];
@@ -54,7 +56,7 @@ function menu(){
 								</select>
 							</td>
 							<td>
-								<input class="submit-form-trombi2" type="submit" value="Valider" name="form-trombinoscope" />
+								<input id="submit-valider" style="display: none;" class="submit-form-trombi2" type="submit" value="Valider" name="form-trombinoscope" />
 							</td>
 						</tr>
 					</table>
@@ -67,73 +69,86 @@ function menu(){
 
 function filiereAndGroupe($filiere, $groupe, $key){
 	
-	$jsonTextApiTrombi = file_get_contents("https://etudiants.alwaysdata.net/test_api?groupe=$groupe&filiere=$filiere&key=$key");
+	$jsonTextApiTrombi = file_get_contents("https://etudiants.alwaysdata.net/trombinoscope?groupe=$groupe&filiere=$filiere&key=$key");
 	$jsonArrayApiTrombi = json_decode($jsonTextApiTrombi, True);
 
-	if (isset($jsonArrayApiTrombi[$filiere][$groupe])) {
-		echo "<h2 class=\"h2-api\">Le groupe $groupe de la filière $filiere compte " . sizeof($jsonArrayApiTrombi[$filiere][$groupe]). " élèves</h2><br/>\n";
-		menu();
-		echo "<div class=\"container-api\">";
-		for ($i=1; $i <= sizeof($jsonArrayApiTrombi[$filiere][$groupe]); $i++) {
-			$info = $jsonArrayApiTrombi[$filiere][$groupe][$i];
-			echo "<div class=\"div-api\">\n";
-			echo "<img src=\"https://etudiants.alwaysdata.net/img/profil/" . $info["image"] . "\" onclick='showInfo(\"profil-" . $i ."\")' alt=\"Erreur\"/><br/>\n";
-			echo "<p>" . $info["nom"] . " " . $info["prenom"] . "</p>\n";
-			echo "<p class=\"profil-info\" id=\"profil-" . $i . "\" style=\"display: none;\">" . $info["email"] . "<br/>" . $info["telephone"] . "</p>\n";
-			echo "</div>\n";
+	if (!isset($jsonArrayApiTrombi["code"])) {
+
+		if (isset($jsonArrayApiTrombi[$filiere][$groupe])) {
+			echo "<h2 class=\"h2-api\">Le groupe $groupe de la filière $filiere compte " . sizeof($jsonArrayApiTrombi[$filiere][$groupe]). " élèves</h2><br/>\n";
+			menu();
+			echo "<div class=\"container-api\">";
+			for ($i=1; $i <= sizeof($jsonArrayApiTrombi[$filiere][$groupe]); $i++) {
+				$info = $jsonArrayApiTrombi[$filiere][$groupe][$i];
+				echo "<div class=\"div-api\">\n";
+				echo "<img src=\"https://etudiants.alwaysdata.net/img/profil/" . $info["image"] . "\" onclick='showInfo(\"profil-" . $i ."\")' alt=\"Erreur\"/><br/>\n";
+				echo "<p>" . $info["nom"] . " " . $info["prenom"] . "</p>\n";
+				echo "<p class=\"profil-info\" id=\"profil-" . $i . "\" style=\"display: none;\">" . $info["email"] . "<br/>" . $info["telephone"] . "</p>\n";
+				echo "</div>\n";
+			}
+			echo "</div>";
 		}
-		echo "</div>";
+	}else{
+		menu();
+		echo $jsonArrayApiTrombi["message"];
 	}
 }
 
 function filiereOnly($filiere,$groupe,$key){
-	$jsonTextApiTrombi = file_get_contents("https://etudiants.alwaysdata.net/test_api?filiere=$filiere&key=$key");
+	$jsonTextApiTrombi = file_get_contents("https://etudiants.alwaysdata.net/trombinoscope?filiere=$filiere&key=$key");
 	$jsonArrayApiTrombi = json_decode($jsonTextApiTrombi, True);
-	
-	$jsonTextApiFiliere = file_get_contents("https://etudiants.alwaysdata.net/filiere.json");
-	$jsonArrayApiFiliere = json_decode($jsonTextApiFiliere, True);
-	for ($i=0; $i < sizeof($jsonArrayApiFiliere["filiere"]); $i++) { 
-		if ($filiere == $jsonArrayApiFiliere["filiere"][$i]["nom"]) {
-			break;
-		}
-	}
 
-	// Permet de récupérer le nom des groupes correspondant à la filière recherchée
-	$stockGroupe = array();
-	for ($k=0; $k < sizeof($jsonArrayApiFiliere["filiere"][$i]["groupe"]); $k++) { 
-		$stockGroupe[$k] = $jsonArrayApiFiliere["filiere"][$i]["groupe"][$k];
-	}
-
-	// Nombre d'élèves
-
-	for ($j=0; $j < sizeof($stockGroupe); $j++) { 
-		$nombreEleves += sizeof($jsonArrayApiTrombi[$filiere][$stockGroupe[$j]]);
-	}
-
-	echo "<h2 class=\"h2-api\">La filière $filiere compte " . $nombreEleves . " élèves</h2><br/>\n";
-	menu();
-
-
-	echo "<div class=\"container-api\">";
-	$stockAlea = array();
-	for ($j=0; $j < sizeof($stockGroupe); $j++) {
-		$groupe = $stockGroupe[$j];
-		for ($i=0; $i < sizeof($jsonArrayApiTrombi[$filiere][$groupe]); $i++) {
-			$info = $jsonArrayApiTrombi[$filiere][$groupe][$i];
-			echo "<div class=\"div-api\">\n";
-			$alea = mt_rand(0,99999); // on prend une valeur aléatoire car $i recommence à 0 donc va faire des doublons
-			while (in_array($alea, $stockAlea)) {
-				$alea = mt_rand(0,99999);
+	if (!isset($jsonArrayApiTrombi["code"])) {
+		$jsonTextApiFiliere = file_get_contents("https://etudiants.alwaysdata.net/filiere.json");
+		$jsonArrayApiFiliere = json_decode($jsonTextApiFiliere, True);
+		for ($i=0; $i < sizeof($jsonArrayApiFiliere["filiere"]); $i++) { 
+			if ($filiere == $jsonArrayApiFiliere["filiere"][$i]["nom"]) {
+				break;
 			}
-			$stockAlea[] = $alea;
-			echo "<img src=\"https://etudiants.alwaysdata.net/img/profil/" . $info["image"] . "\" onclick='showInfo(\"profil-" . $alea ."\")' alt=\"Erreur\"/><br/>\n";
-			echo "<p>" . $info["nom"] . " " . $info["prenom"] . "</p>\n";
-			echo "<p class=\"profil-info\" id=\"profil-" . $alea . "\" style=\"display: none;\">" . $info["email"] . "<br/>" . $info["telephone"] . "</p>\n";
-			echo "</div>\n";
 		}
+
+		// Permet de récupérer le nom des groupes correspondant à la filière recherchée
+		$stockGroupe = array();
+		for ($k=0; $k < sizeof($jsonArrayApiFiliere["filiere"][$i]["groupe"]); $k++) { 
+			$stockGroupe[$k] = $jsonArrayApiFiliere["filiere"][$i]["groupe"][$k];
+		}
+
+		// Nombre d'élèves
+
+		for ($j=0; $j < sizeof($stockGroupe); $j++) { 
+			$nombreEleves += sizeof($jsonArrayApiTrombi[$filiere][$stockGroupe[$j]]);
+		}
+
+		echo "<h2 class=\"h2-api\">La filière $filiere compte " . $nombreEleves . " élèves</h2><br/>\n";
+		menu();
+
+
+		echo "<div class=\"container-api\">";
+		$stockAlea = array();
+		for ($j=0; $j < sizeof($stockGroupe); $j++) {
+			$groupe = $stockGroupe[$j];
+			for ($i=0; $i < sizeof($jsonArrayApiTrombi[$filiere][$groupe]); $i++) {
+				$info = $jsonArrayApiTrombi[$filiere][$groupe][$i];
+				echo "<div class=\"div-api\">\n";
+				$alea = mt_rand(0,99999); // on prend une valeur aléatoire car $i recommence à 0 donc va faire des doublons
+				while (in_array($alea, $stockAlea)) {
+					$alea = mt_rand(0,99999);
+				}
+				$stockAlea[] = $alea;
+				echo "<img src=\"https://etudiants.alwaysdata.net/img/profil/" . $info["image"] . "\" onclick='showInfo(\"profil-" . $alea ."\")' alt=\"Erreur\"/><br/>\n";
+				echo "<p>" . $info["nom"] . " " . $info["prenom"] . "</p>\n";
+				echo "<p class=\"profil-info\" id=\"profil-" . $alea . "\" style=\"display: none;\">" . $info["email"] . "<br/>" . $info["telephone"] . "</p>\n";
+				echo "</div>\n";
+			}
+		}
+		echo "</div>";
+	}else{
+		menu();
+		echo $jsonArrayApiTrombi["message"];
 	}
-	echo "</div>";
 }
+
+// faire les erreurs
 
 if (isset($_COOKIE["trombi"]) && !isset($_POST["form-trombinoscope"])) {
 	$jsonTabTrombi = $_COOKIE["trombi"];
@@ -163,6 +178,7 @@ if (isset($_POST["form-trombinoscope"])) {
 	}else{
 		$erreur = "Tous les champs doivent être complétés.";}
 }
+
 ?>
 
 
@@ -208,6 +224,7 @@ if (empty($_POST["filiere"]) && !isset($_COOKIE["trombi"])) {
 <script type="text/javascript">
 
 	function json(id){
+		var submit = document.getElementById("submit-valider");
 		var option = document.getElementById("opt-groupe");
 		var json = <?php echo $jsonTextApiFiliere; ?>;
 		var nomFiliere = document.getElementById(id).value;
@@ -220,7 +237,8 @@ if (empty($_POST["filiere"]) && !isset($_COOKIE["trombi"])) {
 		for (var j = 0; j < json["filiere"][i]["groupe"].length; j++) {
 			option.innerHTML += "<option value=" + json["filiere"][i]["groupe"][j] + ">" + json["filiere"][i]["groupe"][j] + "</option>";
 		}
-		
+		submit.style.display = 'block';
+
 	}
 
 	function showInfo(id){
@@ -260,3 +278,8 @@ if (empty($_POST["filiere"]) && !isset($_COOKIE["trombi"])) {
 
 </body>
 </html>
+<?php
+}else{
+	header("Location: index");
+}
+?>

@@ -7,6 +7,7 @@
 	$dbApi = "dbapi.csv"; // La base de données pour les demandeurs de l'api
 	// La base de données est comme ceci:
 	// id;clé;mot de passe hasher avec la clé;email;heure;nombre d'utilisation
+	$maxApi = 40; // Maximum de requêtes sur l'API
 
 	$generalLog = "general.log"; // Fichier des logs principaux y seront notés (inscription/connexion/déconnexion)
 	$modifLog = "modif.log"; // Fichier des logs des modifications du profil

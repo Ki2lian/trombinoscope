@@ -20,6 +20,10 @@ function error($nom){
             $tableau["erreur"]["code"] = "404";
             $tableau["erreur"]["message"] = "Le groupe et/ou la filière n'existe pas";
             break;
+        case 'erreurMax':
+            $tableau["erreur"]["code"] = "404";
+            $tableau["erreur"]["message"] = "Vous avez déjà utilisé toutes les requêtes pour cette heure-ci";
+            break;
     }
     return $tableau["erreur"];
 }
@@ -94,40 +98,86 @@ for ($i=0; $i < sizeof($jsonArrayApiFiliere["filiere"]); $i++) {
     }
 }
 
-$key = "UikPqwDB8c1SHlFAn6FoMryc3610OMbZ";
-if (isset($_GET["key"])) {
-    if ($_GET["key"] == $key) {
+function limitationApi($dbApi, $keyURL, $max){
+    $fichier = fopen($dbApi, "r");
+    $tableauStock = array();
+
+    while ($lignes = fgets($fichier)){
+        $lignes = explode(';', $lignes);
+        if ($lignes[1] == $keyURL && $lignes[4] != strftime("%H", time())){
+            $write = 1;
+
+            $stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . strftime("%H", time()) . ";" . 1 . "\n";
+
+        }elseif ($lignes[1] == $keyURL && $lignes[4] == strftime("%H", time()) && $lignes[5] != $max) {
+            $write = 1;
+            $valeur = $lignes[5];
+            $valeur += 1;
+            $stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $valeur . "\n";
+        }elseif ($lignes[1] == $keyURL && $lignes[4] == strftime("%H", time()) && $lignes[5] == $max) {
+            fclose($fichier);
+            return "erreurMax"; // l'utilisateur a déjà utilisé les 20 utilisations par heure
+        }
+        else{
+            $stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5];
+        }
+
+        array_push($tableauStock, $stockerLigne);
+    }
+
+    fclose($fichier);
+    if ($write == 1) {
+        $fichier = fopen($dbApi, "w");
+        for ($i = 0; $i < sizeof($tableauStock); $i++){
+             fputs($fichier, $tableauStock[$i]);
+        }
+        fclose($fichier);
+        return 1;
+    }else{
+        return False;
+    }
+}
+
+
+$key = "QTAG6uFg7Ta62PIFFRDm3Kp82kkmxVvh";
+$keyURL = $_GET["key"];
+if (isset($keyURL)) {
+    if ($keyURL == $key) {
         $filiereLog = $_GET["filiere"];
         $groupeLog = $_GET["groupe"];
-        if (isset($_GET["filiere"]) && !isset($_GET["groupe"])) {
-            if (!empty($_GET["filiere"])) {
-                if (in_array($_GET["filiere"], $filiere)) {
-                    $info = getAllStudentInfo( $db, $_GET["filiere"], "" );
-                    writeLogs($apiLog, "$key;1;a utilisé l'api pour voir la filière;$filiereLog;none"); // le chiffre après $key permet de savoir quelle action a été faite.
-                }else{
-                    $info = error("filiere");}  
-            }else{
-                $info = error("filiere");}
 
-        }elseif (!isset($_GET["filiere"]) && isset($_GET["groupe"])) {
-            if (!empty($_GET["groupe"])) {
-                if (in_array($_GET["groupe"], $groupe)) {
-                    $info = getAllStudentInfo( $db,"", $_GET["groupe"] );
-                    writeLogs($apiLog, "$key;2;a utilisé l'api pour voir le groupe;none;$groupeLog");
+        if (limitationApi($dbApi, $keyURL, $maxApi) != "erreurMax") {
+            if (isset($_GET["filiere"]) && !isset($_GET["groupe"])) {
+                if (!empty($_GET["filiere"])) {
+                    if (in_array($_GET["filiere"], $filiere)) {
+                        $info = getAllStudentInfo( $db, $_GET["filiere"], "" );
+                        writeLogs($apiLog, "$key;1;a utilisé l'api pour voir la filière;$filiereLog;none"); // le chiffre après $key permet de savoir quelle action a été faite.
+                    }else{
+                        $info = error("filiere");}  
+                }else{
+                    $info = error("filiere");}
+
+            }elseif (!isset($_GET["filiere"]) && isset($_GET["groupe"])) {
+                if (!empty($_GET["groupe"])) {
+                    if (in_array($_GET["groupe"], $groupe)) {
+                        $info = getAllStudentInfo( $db,"", $_GET["groupe"] );
+                        writeLogs($apiLog, "$key;2;a utilisé l'api pour voir le groupe;none;$groupeLog");
+                    }else{
+                        $info = error("groupe");}
                 }else{
                     $info = error("groupe");}
-            }else{
-                $info = error("groupe");}
 
 
 
-        }elseif (isset($_GET["filiere"]) && isset($_GET["groupe"])) {
-            if (!empty($_GET["filiere"]) && !empty($_GET["groupe"]) && in_array($_GET["filiere"], $filiere) && in_array($_GET["groupe"], $groupe)) {
-                $info = getAllStudentInfo( $db, $_GET["filiere"], $_GET["groupe"] );
-                writeLogs($apiLog, "$key;3;a utilisé l'api pour voir la filière et le groupe;$filiereLog;$groupeLog");
-            }else{
-                $info = error("groupeEtFiliere");}
-        }
+            }elseif (isset($_GET["filiere"]) && isset($_GET["groupe"])) {
+                if (!empty($_GET["filiere"]) && !empty($_GET["groupe"]) && in_array($_GET["filiere"], $filiere) && in_array($_GET["groupe"], $groupe)) {
+                    $info = getAllStudentInfo( $db, $_GET["filiere"], $_GET["groupe"] );
+                    writeLogs($apiLog, "$key;3;a utilisé l'api pour voir la filière et le groupe;$filiereLog;$groupeLog");
+                }else{
+                    $info = error("groupeEtFiliere");}
+            }
+        }else{
+            $info = error("erreurMax"); writeLogs($erreurLog, "$keyURL;$pageLog;a atteint le maximum d'utilisation pour cette heure;none");}
     }else{
         $info = error("key");}
 }else{

@@ -97,18 +97,16 @@ nav > ul > li:hover > a{
 }
 
 td{
-	padding-bottom: 5%;
+	padding-bottom: 15px;
+    padding-right: 30px;
 }
+
 
 td > input, .uploadFile{
 	border: 1px solid #000;
   	border-radius: 4px;
   	padding: 15px;
   	font-size: 25px;
-}
-
-td > input{
-	width: 100%;
 }
 
 .uploadFile{
@@ -334,6 +332,25 @@ code {
     background-color: #dfe4ea;
     border-radius: 4px;
     font-size: 15px;
+}
+
+.ul1, .ul2, .ul3{
+    flex-direction: column;
+    margin-bottom: -10px;
+}
+.ul1 {
+    list-style-type: disc;
+}
+
+.ul2 {
+    list-style-type: circle;
+    margin-left: 5%;
+}
+
+.ul3 {
+    list-style-type: square;
+    margin-left: 10%;
+    
 }
 
 a{

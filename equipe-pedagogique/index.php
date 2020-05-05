@@ -77,20 +77,18 @@ if (!isset($_SESSION["nom"])) {?>
 			<td>
 				<input title="Votre nom" type="text" maxlength="20" placeholder="Nom" id="nom" name="nom" required="required" aria-required="true" value="<?php if(isset($nom)){echo($nom);} ?>"/>
 			</td>
+
 			<td>
-				<td>
 				<input title="Votre prénom" type="text" maxlength="20" placeholder="Prénom" id="prenom" name="prenom" required="required" aria-required="true" value="<?php if(isset($prenom)){echo($prenom);} ?>"/>
-				</td>
 			</td>
 		</tr>
 		<tr>
 			<td>
 				<input title="Votre email" type="email" placeholder="Email" id="mail" name="mail" required="required" aria-required="true" value="<?php if(isset($mail)){echo($mail);} ?>"/>
 			</td>
+
 			<td>
-				<td>
 				<input title="Votre email de confirmation" type="email" placeholder="Email de confirmation" id="mail2" name="mail2" required="required" aria-required="true" value="<?php if(isset($mail2)){echo($mail2);} ?>"/>
-				</td>
 			</td>
 		</tr>
 		<tr>
@@ -100,6 +98,8 @@ if (!isset($_SESSION["nom"])) {?>
 			<td>
 				<img id="eyes_mdp1" style="padding-right: 5px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
 			</td>
+		</tr>
+		<tr>
 			<td>
 				<input title="Votre mot de passe de confirmation doit contenir au minimum 8 caractères" type="password" placeholder="Mot de passe de confirmation" id="mdp2" name="mdp2" required="required" aria-required="true" minlength="8" />
 			</td>

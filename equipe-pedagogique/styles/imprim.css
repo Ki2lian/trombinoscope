@@ -1,3 +1,5 @@
+@page {size: portrait;}
+
 header, input, .input-api, .input-api:hover, select{
 	display: none;
 }

@@ -139,6 +139,7 @@ function VerifConfirmation($db, $nom, $prenom, $key){
 		for ($i = 0; $i < sizeof($tableauStock); $i++){
 			 fputs($fichier, $tableauStock[$i]);
 		}
+		fclose($fichier);
 		return 1;
 	}else{
 		return False;

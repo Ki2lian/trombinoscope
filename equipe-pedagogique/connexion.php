@@ -46,6 +46,9 @@ if (!isset($_SESSION["nom"])) {?>
 				<td>
 					<input title="Votre email" type="email" placeholder="Email" id="mail" name="mail" required="required" aria-required="true" value="<?php if(isset($mail)){echo($mail);} ?>"/>
 				</td>
+				<td> <!-- Pour initialiser à 2 cellules, sinon problème dans la vérification html -->
+					
+				</td>
 			</tr>
 			<tr>
 				<td>

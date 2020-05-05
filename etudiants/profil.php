@@ -159,7 +159,7 @@ if (isset($_SESSION["nom"])) {?>
 <div class="row">
 	<div class="box">
 		<div class="box_body profil">
-			<img class="img-profil" src="img/profil/<?php echo $img; ?>" />
+			<img class="img-profil" src="img/profil/<?php echo $img; ?>" alt="erreur avec le chargement de l'image de profil" />
 		</div>
 		<div id="preview-file"></div>
 		<div class="profil_framed">
@@ -181,7 +181,7 @@ if (isset($_SESSION["nom"])) {?>
 			<p class="underline">Téléphone:</p><p class="bold"><?php echo " " . $telephone; ?></p>
 		</div>
 		<div class="profil_about">
-			<p class="underline">Anniversaire:</p><p class="bold"><?php echo " " . strftime("%d/%m/%Y", $anniv); ?></p>
+			<p class="underline">Date de naissance:</p><p class="bold"><?php echo " " . strftime("%d/%m/%Y", $anniv); ?></p>
 		</div>
 	</div>
 </div>
@@ -201,22 +201,22 @@ if (isset($_SESSION["nom"])) {?>
 			<table>
 				<tr>
 					<td>
-						<input title="Votre nom" type="text" maxlength="20" placeholder="Nom" id="nom" name="nom" required="required" aria-required="true" value="<?php echo($nom); ?>"/>
+						<input title="Votre nom" type="text" maxlength="20" placeholder="Nom" id="nom" name="nom" required="required" value="<?php echo($nom); ?>"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input title="Votre prénom" type="text" maxlength="20" placeholder="Prénom" id="prenom" name="prenom" required="required" aria-required="true" value="<?php echo($prenom); ?>"/>
+						<input title="Votre prénom" type="text" maxlength="20" placeholder="Prénom" id="prenom" name="prenom" required="required" value="<?php echo($prenom); ?>"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input title="Votre numéro de téléphone portable" type="text" placeholder="Numéro de téléphone portable" id="numero" name="numero" required="required" aria-required="true" value="<?php echo($telephone); ?>" pattern="0[1-68]([-. ]?[0-9]{2}){4}"/>
+						<input title="Votre numéro de téléphone portable" type="text" placeholder="Numéro de téléphone portable" id="numero" name="numero" required="required" value="<?php echo($telephone); ?>" pattern="0[1-68]([-. ]?[0-9]{2}){4}"/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input title="Date de naissance" type="date" value="<?php echo strftime("%Y-%m-%d", $anniv); ?>" name="anniv" required="required" aria-required="true"/>
+						<input title="Date de naissance" type="date" value="<?php echo strftime("%Y-%m-%d", $anniv); ?>" name="anniv" required="required"/>
 					</td>
 				</tr>
 				<tr>
@@ -288,7 +288,7 @@ if (isset($_SESSION["nom"])) {?>
 			<table>
 				<tr>
 					<td>
-						<input title="Votre mot de passe actuel" type="password" placeholder="Votre mot de passe actuel" id="mdp" name="mdp" required="required" aria-required="true" minlength="8" />
+						<input title="Votre mot de passe actuel" type="password" placeholder="Votre mot de passe actuel" id="mdp" name="mdp" required="required" minlength="8" />
 					</td>
 					<td>
 						<img id="eyes_mdp" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
@@ -296,7 +296,7 @@ if (isset($_SESSION["nom"])) {?>
 				</tr>
 				<tr>
 					<td>
-						<input title="Votre nouveau mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Nouveau mot de passe" id="mdp3" name="mdp3" required="required" aria-required="true" minlength="8" />
+						<input title="Votre nouveau mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Nouveau mot de passe" id="mdp3" name="mdp3" required="required" minlength="8" />
 					</td>
 					<td>
 						<img id="eyes_mdp2" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp3'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
@@ -304,7 +304,7 @@ if (isset($_SESSION["nom"])) {?>
 				</tr>
 				<tr>
 					<td>
-						<input title="Confirmation du nouveau mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Confirmation du nouveau mot de passe" id="mdp4" name="mdp4" required="required" aria-required="true" minlength="8" />
+						<input title="Confirmation du nouveau mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Confirmation du nouveau mot de passe" id="mdp4" name="mdp4" required="required" minlength="8" />
 					</td>
 					<td>
 						<img id="eyes_mdp3" style="padding-left: 18px;height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('mdp4'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
@@ -313,6 +313,9 @@ if (isset($_SESSION["nom"])) {?>
 				<tr>
 					<td>
 						<input class="submit-form" type="submit" value="Modifier" name="form-modifpassword" />
+					</td>
+					<td> <!-- Permet de mettre 2 cellules sinon problème verif html -->
+						
 					</td>
 				</tr>
 			</table>
@@ -326,12 +329,12 @@ if (isset($_SESSION["nom"])) {?>
 			<table>
 				<tr>
 					<td>
-						<input title="Votre nouvel email" type="email" placeholder="Nouvel email" id="mail" name="mail" required="required" aria-required="true" value=""/>
+						<input title="Votre nouvel email" type="email" placeholder="Nouvel email" id="mail" name="mail" required="required" value=""/>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<input title="Votre nouvel email de confirmation" type="email" placeholder="Nouvel email de confirmation" id="mail2" name="mail2" required="required" aria-required="true" value=""/>
+						<input title="Votre nouvel email de confirmation" type="email" placeholder="Nouvel email de confirmation" id="mail2" name="mail2" required="required" value=""/>
 					</td>
 				</tr>
 				<tr>
@@ -347,7 +350,7 @@ if (isset($_SESSION["nom"])) {?>
 <div class="row" id="modif-avatar" style="display: none;">
 	<form name="formAvatar" method="post" enctype="multipart/form-data">
 		<div>
-    		<input class="uploadFile" name="file" type="file" multiple accept=".png, .jpg, .jpeg" required="required" aria-required="true"/>
+    		<input class="uploadFile" name="file" type="file" accept=".png, .jpg, .jpeg" required="required"/>
  		</div> 
   		<input class="submit-form" type="submit" name="form-avatar" value="Changer" />
 	</form>
@@ -375,7 +378,7 @@ if (isset($msg)) {
 }
 ?>
 
-<script type="text/javascript">
+<script>
 	function modif(id){
 		divModifActuel = document.getElementById(id);
 
@@ -444,10 +447,7 @@ if (isset($msg)) {
 	    aFileInput[k].addEventListener('change', changeInputFil, false);
 	  }
 	});
-</script>
 
-<script src="js/script.js"></script>
-<script type="text/javascript">
 
 	function json(id){
 		var option = document.getElementById("opt-groupe");
@@ -466,6 +466,8 @@ if (isset($msg)) {
 		
 	}
 </script>
+
+<script src="js/script.js"></script>
 
 </body>
 </html>

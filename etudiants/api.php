@@ -39,15 +39,14 @@ if (isset($_POST["form-recup-key"])) {
 		if (verifConnexion($dbApi, $mail, $mdp, 3, 2, 1) != False) {
 			$tableau = verifConnexion($dbApi, $mail, $mdp, 3, 2, 1);
 			$recupKey = "Votre clé: $tableau[1]";
+			$recupUtil = "Utilisation: $tableau[5]/$maxApi";
 			writeLogs($apiLog, "$tableau[3];a fait une demande pour récupérer sa clé");
 		}else{
-			$erreurRecup = "L'email ou le mot de passe est incorrect !";}
+			$erreurRecup = "L'email ou le mot de passe est incorrect !";  writeLogs($erreurLog, "anonyme;$pageLog;$erreurRecup;$mail");}
 	}else{
-		$erreurRecup = "Tous les champs doivent être complétés.";}
-}
-?>
+		$erreurRecup = "Tous les champs doivent être complétés."; writeLogs($erreurLog, "anonyme;$pageLog;$erreurRecup;none");}}?>
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
 	<title>Trombinoscope: API</title>
 	<meta charset="utf-8"/>
@@ -70,7 +69,7 @@ if (isset($_POST["form-recup-key"])) {
 			</p>
 			<div class="information">
 				<h4>	
-					N'oubliez pas que tous les exemples d'appels API répertoriés sur cette page ne sont que des exemples et n'ont aucune connexion avec le véritable service API !
+					N'oubliez pas que tous les exemples d'appels API répertoriés sur cette page ne sont que des exemples et n'ont aucune connexion avec le véritable service API ! Par ailleurs, l'API est limitée à <?php echo $maxApi ?> utilisations par heure pour une clé.
 				</h4>
 			</div>
 			<h2 class="h2-doc">Par filière</h2>
@@ -169,50 +168,51 @@ if (isset($_POST["form-recup-key"])) {
 				<h2 class="h2-doc">Les différents paramètres de réponse de l'API</h2>
 				<div class="parametres">
 					<h4 class="h4-doc">Paramètres de la réponse d'api du dessus:</h4>
-					<ul>
+					<ul class="ul1">
 						<li>
 							<code>B2</code>
 							Correspond au groupe
-							<ul>
-								<li>
-									<code>LPI-RIWS</code>
-								Correspond à la filière
-								</li>
-								<li>
-									<code>1</code>
-									Correspond à la position de l'étudiant
-								</li>
-								<ul>
-									<li>
-										<code>ID</code>
-										Correspond à l'identifiant unique de l'étudiant
-									</li>
-									<li>
-										<code>nom</code>
-										Correspond au nom de l'étudiant
-									</li>
-									<li>
-										<code>prenom</code>
-										Correspond au prénom de l'étudiant
-									</li>
-									<li>
-										<code>email</code>
-										Correspond au mail de l'étudiant
-									</li>
-									<li>
-										<code>telephone</code>
-										Correspond au numéro de téléphone de l'étudiant
-									</li>
-									<li>
-										<code>image</code>
-										Correspond à l'image de l'étudiant <a href="#image">(comment l'utiliser)</a>
-									</li>
-									<li>
-										<code>naissance</code>
-										Correspond à la date de naissance de l'étudiant
-									</li>
-								</ul>
-							</ul>
+						</li>
+					</ul>
+
+					<ul class="ul2">
+						<li>
+							<code>LPI-RIWS</code>
+						Correspond à la filière
+						</li>
+						<li>
+							<code>1</code>
+							Correspond à la position de l'étudiant
+						</li>
+					</ul>
+					<ul class="ul3">
+						<li>
+							<code>ID</code>
+							Correspond à l'identifiant unique de l'étudiant
+						</li>
+						<li>
+							<code>nom</code>
+							Correspond au nom de l'étudiant
+						</li>
+						<li>
+							<code>prenom</code>
+							Correspond au prénom de l'étudiant
+						</li>
+						<li>
+							<code>email</code>
+							Correspond au mail de l'étudiant
+						</li>
+						<li>
+							<code>telephone</code>
+							Correspond au numéro de téléphone de l'étudiant
+						</li>
+						<li>
+							<code>image</code>
+							Correspond à l'image de l'étudiant <a href="#image">(comment l'utiliser)</a>
+						</li>
+						<li>
+							<code>naissance</code>
+							Correspond à la date de naissance de l'étudiant
 						</li>
 					</ul>
 				</div>
@@ -271,6 +271,9 @@ if (isset($_POST["form-recup-key"])) {
 						<td>
 							<input class="input-api" title="Votre email" type="email" placeholder="Email" name="mail" required="required" aria-required="true" value="<?php if (isset($erreur)) {echo($mail);} ?>" />
 						</td>
+						<td> <!-- Pour initialiser à 2 cellules, sinon problème dans la vérification html -->
+							
+						</td>
 					</tr>
 					<tr>
 						<td>
@@ -305,13 +308,16 @@ if (isset($_POST["form-recup-key"])) {
 						<td>
 							<input class="input-api" title="Votre email" type="email" placeholder="Email" name="mail" required="required" aria-required="true" value="<?php if (isset($erreurRecup)) {echo($mail);} ?>" />
 						</td>
+						<td> <!-- Pour initialiser à 2 cellules, sinon problème dans la vérification html -->
+							
+						</td>
 					</tr>
 					<tr>
 						<td>
 							<input class="input-api" title="Votre mot de passe doit contenir au minimum 8 caractères" type="password" placeholder="Mot de passe" name="mdp" id="password3" required="required" aria-required="true" minlength="8"/>
 						</td>
 						<td>
-							<img id="eyes_mdp1" style="height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('password3'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
+							<img id="eyes_mdp3" style="height: 50px; width: 50px; cursor: pointer;" onclick="showPassword('password3'); changeimg(this)" src="img/eyes.png" alt="Oeil"/>
 						</td>
 					</tr>
 				</table>
@@ -321,7 +327,8 @@ if (isset($_POST["form-recup-key"])) {
 			if (isset($erreurRecup)) {
 				echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $erreurRecup . "</font>\n";
 			}elseif ($recupKey) {
-				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $recupKey . "</font>\n";
+				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $recupKey . "</font><br/>\n";
+				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $recupUtil . "</font>\n";
 			}
 			?>
 		</div>
