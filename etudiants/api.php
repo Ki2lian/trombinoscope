@@ -39,7 +39,7 @@ if (isset($_POST["form-recup-key"])) {
 		if (verifConnexion($dbApi, $mail, $mdp, 3, 2, 1) != False) {
 			$tableau = verifConnexion($dbApi, $mail, $mdp, 3, 2, 1);
 			$recupKey = "Votre clé: $tableau[1]";
-			$recupUtil = "Utilisation: $tableau[5]/$maxApi";
+			$difference = $maxApi - $tableau[5];
 			writeLogs($apiLog, "$tableau[3];a fait une demande pour récupérer sa clé");
 		}else{
 			$erreurRecup = "L'email ou le mot de passe est incorrect !";  writeLogs($erreurLog, "anonyme;$pageLog;$erreurRecup;$mail");}
@@ -328,7 +328,7 @@ if (isset($_POST["form-recup-key"])) {
 				echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $erreurRecup . "</font>\n";
 			}elseif ($recupKey) {
 				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $recupKey . "</font><br/>\n";
-				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $recupUtil . "</font>\n";
+				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">Il vous reste " . $difference . " utilisations pour cette heure.</font><br/>\n";
 			}
 			?>
 		</div>
