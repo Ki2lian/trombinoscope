@@ -1,4 +1,4 @@
-<?php include("includes/config.php"); include("includes/function.php");
+<?php include("includes/config.inc.php"); include("includes/function.inc.php");
 
 function error($nom){
     $tableau["erreur"] = array();

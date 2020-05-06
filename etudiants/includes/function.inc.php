@@ -1,4 +1,4 @@
-<?php include("config.php");
+<?php include("config.inc.php");
 
 // Fonctions pour la page index.php (inscription)
 
@@ -151,7 +151,7 @@ function VerifConfirmation($db, $nom, $prenom, $key){
 
 	// Met le code de l'image dans la base de données
 function putAvatarCodeInDb($db){
-	include("config.php");
+	include("config.inc.php");
 	$fichier = fopen($db, "r");
 	$tableauStock = array();
 	$id = $_SESSION["id"];
@@ -233,7 +233,7 @@ function writeLogs($fichier, $message){
 
 	// Création de comptes
 function genereAccount($db, $nombre=20){
-	include("config.php");
+	include("config.inc.php");
 	$prenomsGars = array("William","Eugène","Evrard","Eustache","Senapus","Jean","Baptiste","Honore","Thomas","André","Benjamin","Rémy","Amaury","Aubin","Erwann","Adrien","Paul","Roméo","Gérard","Jacques","Michel","Pierre","Gaëtan","Jason","Chris","Damien","Jordan","Lucas","Maxime","Valentin","Théo","Guillaume","Marcel","Clément","Harry");
 
 	$prenomsFille = array("Arianne","Madelene","Aurore","Marguerite","Philippine","Fabienne","Lola","Sarah","Margot","Madisson","Nora","Claire","Nolwenn","Chantal","Juliette","Corette","Jeanne","Elena","Salomé","Clara","Léa","Emma","Marie","Cécile", "Fauna","Margaux","Nicole","Noémie","Clémence","Léane","Louise","Virginie", "Laure","Pascaline","Delphine");

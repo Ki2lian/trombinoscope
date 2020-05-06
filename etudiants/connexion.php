@@ -1,6 +1,6 @@
-<?php include("includes/config.php");
+<?php include("includes/config.inc.php");
 if (isset($_POST["form-connexion"])) {
-	include("includes/function.php");
+	include("includes/function.inc.php");
 	$mail = htmlspecialchars($_POST["mail"]);
 	$mdp = htmlspecialchars($_POST["mdp"]);
 
@@ -45,7 +45,7 @@ if (!isset($_SESSION["nom"])) {?>
 </head>
 <body>
 <header>
-  <?php include "includes/menunav.php" ?>
+  <?php include "includes/menunav.inc.php" ?>
 </header>
 <div class="formulaire">
 	<form method="post">

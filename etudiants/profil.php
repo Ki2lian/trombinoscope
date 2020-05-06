@@ -1,5 +1,5 @@
-<?php  include("includes/config.php");
-include("includes/function.php");
+<?php  include("includes/config.inc.php");
+include("includes/function.inc.php");
 if(isset($_SESSION["id"])){
 	$id = $_SESSION["id"];
 	$nom = $_SESSION["nom"];
@@ -153,7 +153,7 @@ if (isset($_SESSION["nom"])) {?>
 </head>
 <body>
 <header>
-  <?php include "includes/menunav.php" ?>
+  <?php include "includes/menunav.inc.php" ?>
 </header>
 
 <div class="row">

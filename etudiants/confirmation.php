@@ -1,7 +1,7 @@
-<?php include("includes/config.php");
+<?php include("includes/config.inc.php");
 
 if (!isset($_SESSION["id"]) && isset($_GET["prenom"], $_GET["nom"], $_GET["key"]) && !empty($_GET["prenom"]) && !empty($_GET["nom"]) && !empty($_GET["key"]) ) {
-	include("includes/function.php");
+	include("includes/function.inc.php");
 	$prenom = htmlspecialchars(urldecode($_GET["prenom"]));
 	$nom = htmlspecialchars(urldecode($_GET["nom"]));
 	$key = htmlspecialchars(urldecode($_GET["key"]));
@@ -30,7 +30,7 @@ if (!isset($_SESSION["id"]) && isset($_GET["prenom"], $_GET["nom"], $_GET["key"]
 </head>
 <body>
 	<header>
-	  <?php include "includes/menunav.php" ?>
+	  <?php include "includes/menunav.inc.php" ?>
 	</header>
 
 	<?php

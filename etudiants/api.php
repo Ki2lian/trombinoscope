@@ -1,4 +1,4 @@
-<?php include("includes/function.php"); include("includes/config.php");
+<?php include("includes/function.inc.php"); include("includes/config.inc.php");
 
 if (isset($_POST["form-demand-key"])) {
 	$mail = htmlspecialchars($_POST["mail"]);
@@ -55,7 +55,7 @@ if (isset($_POST["form-recup-key"])) {
 </head>
 <body>
 	<header>
-	  <?php include "includes/menunav.php" ?>
+	  <?php include "includes/menunav.inc.php" ?>
 	</header>
 	<!-- Inspiré de https://openweathermap.org/current -->
 	<div class="container">

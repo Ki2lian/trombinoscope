@@ -1,6 +1,6 @@
-<?php include("includes/config.php");
+<?php include("includes/config.inc.php");
 if (isset($_POST["form-inscription"])) {
-	include("includes/function.php");
+	include("includes/function.inc.php");
 	$key = randomKey(32);
 	$id = getID($db);
 
@@ -67,7 +67,7 @@ if (!isset($_SESSION["nom"])) {?>
 </head>
 <body>
 <header>
-  <?php include "includes/menunav.php" ?>
+  <?php include "includes/menunav.inc.php" ?>
 </header>
 
 <div class="formulaire">

@@ -1,4 +1,4 @@
-<?php include("includes/config.php");
+<?php include("includes/config.inc.php");
 
 $jsonTextApiFiliere = file_get_contents("https://etudiants.alwaysdata.net/filiere.json");
 $jsonArrayApiFiliere = json_decode($jsonTextApiFiliere, True);
@@ -26,7 +26,7 @@ if (!empty($_POST["filiere"]) && !empty($_POST["groupe"])) {
 <body>
 
 <header>
-  <?php include "includes/menunav.php" ?>
+  <?php include "includes/menunav.inc.php" ?>
 </header>
 <?php
 function menu(){

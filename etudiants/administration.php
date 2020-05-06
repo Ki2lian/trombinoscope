@@ -1,8 +1,8 @@
-<?php include("includes/config.php");
+<?php include("includes/config.inc.php");
 ?>
 <?php
 if (isset($_SESSION["id"]) && $_SESSION["id"] == 1) {
-	include("includes/function.php");
+	include("includes/function.inc.php");
 	$nom = $_SESSION["nom"];
 	$prenom = $_SESSION["prenom"];
 
@@ -17,7 +17,7 @@ if (isset($_SESSION["id"]) && $_SESSION["id"] == 1) {
 </head>
 <body>
 <header>
-  <?php include "includes/menunav.php" ?>
+  <?php include "includes/menunav.inc.php" ?>
 </header>
 <form method="post">
 	<input type="number" name="nombre" required="required" aria-required="true" placeholder="Nombre de comptes à générer" style="width: 12%;" />
