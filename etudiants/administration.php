@@ -1,10 +1,9 @@
 <?php include("includes/config.inc.php");
 ?>
 <?php
-if (isset($_SESSION["id"]) && $_SESSION["id"] == 1) {
-	include("includes/function.inc.php");
-	$nom = $_SESSION["nom"];
-	$prenom = $_SESSION["prenom"];
+include("includes/function.inc.php");
+$nom = $_SESSION["nom"];
+$prenom = $_SESSION["prenom"];
 
 ?>
 <!DOCTYPE html>
@@ -132,10 +131,3 @@ setTimeout("countdown()",1000)
 </script><!-- FIN DU SCRIPT COMPTE A REBOURS -->
 </body>
 </html>
-<?php
-}else{
-	header("location: index");
-}
-
-
-?>

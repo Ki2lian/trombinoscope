@@ -1,5 +1,20 @@
 <?php include("config.inc.php");
 
+// Fonction pour écrire dans la base de données en étant vérouillé
+
+function writeWithVerrou($fichier, $tableauStock){
+	if (flock($fichier, LOCK_EX)) {
+
+	    for ($i = 0; $i < sizeof($tableauStock); $i++){
+			fputs($fichier, $tableauStock[$i]);
+		} 
+	    flock($fichier, LOCK_UN);
+	}
+
+	fclose($fichier);
+}
+
+
 // Fonctions pour la page index.php (inscription)
 
 	// Génère une clé aléatoire
@@ -34,6 +49,7 @@ function verifName($db, $lname, $fname){
 function verifMail($db, $email){
 	$nbrLignes = file($db);
 	$fichier = fopen($db, "r+");
+	flock($fichier, LOCK_SH);
 
 	for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
 		$ligne = fgets($fichier);
@@ -44,6 +60,7 @@ function verifMail($db, $email){
 			return False;
 		}
 	}
+	flock($fichier, LOCK_UN);
 	fclose($fichier);
 	return True;
 }
@@ -54,6 +71,7 @@ function verifNum($db, $num){
 	$num = str_replace($meta_carac, "", $num);
 	$nbrLignes = file($db);
 	$fichier = fopen($db, "r+");
+	flock($fichier, LOCK_SH);
 
 	for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
 		$ligne = fgets($fichier);
@@ -65,6 +83,7 @@ function verifNum($db, $num){
 			return False;
 		}
 	}
+	flock($fichier, LOCK_UN);
 	fclose($fichier);
 	return $num;
 }
@@ -117,6 +136,7 @@ function verifConnexion($db, $email, $password, $posEmail, $posPassword, $posKey
 	// Vérifie si le compte existe, s'il n'est pas validé ou s'il est déjà validé
 function VerifConfirmation($db, $nom, $prenom, $key){
 	$fichier = fopen($db, "r");
+	flock($fichier, LOCK_SH);
 	$valeur = 1;
 	$tableauStock = array();
     while ($lignes = fgets($fichier)){
@@ -132,14 +152,15 @@ function VerifConfirmation($db, $nom, $prenom, $key){
 		}
 		array_push($tableauStock, $stockerLigne);
 	}
-
+	flock($fichier, LOCK_UN);
 	fclose($fichier);
+
 	if ($validate == 1) {
 		$fichier = fopen($db, "w");
-		for ($i = 0; $i < sizeof($tableauStock); $i++){
-			 fputs($fichier, $tableauStock[$i]);
-		}
-		fclose($fichier);
+
+		writeWithVerrou($fichier, $tableauStock);
+
+		
 		return 1;
 	}else{
 		return False;
@@ -153,6 +174,7 @@ function VerifConfirmation($db, $nom, $prenom, $key){
 function putAvatarCodeInDb($db){
 	include("config.inc.php");
 	$fichier = fopen($db, "r");
+	flock($fichier, LOCK_SH);
 	$tableauStock = array();
 	$id = $_SESSION["id"];
 	$valeur = $_SESSION["avatar"];
@@ -167,13 +189,12 @@ function putAvatarCodeInDb($db){
 		}
 		array_push($tableauStock, $stockerLigne);
 	}
+	flock($fichier, LOCK_UN);
+	fclose($fichier);
 
-	fclose($fichier);
 	$fichier = fopen($db, "w");
-	for ($i = 0; $i < sizeof($tableauStock); $i++){
-		fputs($fichier, $tableauStock[$i]);
-	}
-	fclose($fichier);
+
+	writeWithVerrou($fichier, $tableauStock);
 
 }
 
@@ -224,8 +245,12 @@ function changeAvatar($name){
 	// Écrit dans le fichier qu'on veut avec le message qu'on veut
 function writeLogs($fichier, $message){
 	$fichier = fopen( "logs/" . $fichier, "a+");
-	$write = strftime("%d/%m/%Y à %T", time()) . ";" . mktime() . ";" . $message . "\n";
-	fputs($fichier, $write);
+
+	if (flock($fichier, LOCK_EX)) {
+		$write = strftime("%d/%m/%Y à %T", time()) . ";" . mktime() . ";" . $message . "\n";
+		fputs($fichier, $write);
+	    flock($fichier, LOCK_UN);
+	}
 	fclose($fichier);
 }
 
@@ -361,6 +386,7 @@ function ForG(){
 	// Modification des informations générales
 function ModifGeneral($db, $nom, $prenom, $telephone, $filiere, $groupe, $anniv, $erreur=False){
 	$fichier = fopen($db, "r");
+	flock($fichier, LOCK_SH);
 	$id = $_SESSION["id"];
 
 	$_SESSION["nom"] = $nom;
@@ -382,12 +408,11 @@ function ModifGeneral($db, $nom, $prenom, $telephone, $filiere, $groupe, $anniv,
 		}
 		array_push($tableauStock, $stockerLigne);
 	}
-
+	flock($fichier, LOCK_UN);
 	fclose($fichier);
 	$fichier = fopen($db, "w");
-	for ($i = 0; $i < sizeof($tableauStock); $i++){
-		fputs($fichier, $tableauStock[$i]);
-	}
+	writeWithVerrou($fichier, $tableauStock);
+	
 	if ($erreur == True) {
 		header('refresh:5;url=profil');
 	}else{
@@ -415,12 +440,14 @@ function verifPassword($db, $password){
 
 function modifPassword($db, $password){
 	$fichier = fopen($db, "r");
+	flock($fichier, LOCK_SH);
 	$tableauStock = array();
 	$id = $_SESSION["id"];
 
     while ($lignes = fgets($fichier)){
 	 	$lignes = explode(';', $lignes);
 		if ($lignes[0] == $id){
+			$validate = 1;
 
 			$stockerLigne = $lignes[0] . ";" . $lignes[1] . ";" . $lignes[2] . ";" . $lignes[3] . ";" . $lignes[4] . ";" . $lignes[5] . ";" . $lignes[6] . ";" . hash("sha256", $password . $lignes[11]) . ";" . $lignes[8] . ";" . $lignes[9] . ";" . $lignes[10] . ";" . $lignes[11] . ";" . $lignes[12];
 
@@ -429,16 +456,16 @@ function modifPassword($db, $password){
 		}
 		array_push($tableauStock, $stockerLigne);
 	}
-
+	flock($fichier, LOCK_UN);
 	fclose($fichier);
+
 	$fichier = fopen($db, "w");
-	for ($i = 0; $i < sizeof($tableauStock); $i++){
-		fputs($fichier, $tableauStock[$i]);
-	}
+	writeWithVerrou($fichier, $tableauStock);
 }
 
 function modifMail($db, $mail){
 	$fichier = fopen($db, "r");
+	flock($fichier, LOCK_SH);
 	$tableauStock = array();
 	$id = $_SESSION["id"];
 
@@ -454,12 +481,10 @@ function modifMail($db, $mail){
 		}
 		array_push($tableauStock, $stockerLigne);
 	}
-
+	flock($fichier, LOCK_UN);
 	fclose($fichier);
 	$fichier = fopen($db, "w");
-	for ($i = 0; $i < sizeof($tableauStock); $i++){
-		fputs($fichier, $tableauStock[$i]);
-	}
+	writeWithVerrou($fichier, $tableauStock);
 	header("location: profil");
 }
 

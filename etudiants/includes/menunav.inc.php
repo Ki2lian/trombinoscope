@@ -15,14 +15,6 @@
     ?>
         <li class="menu"><a href="../profil">Mon profil</a>
         </li>
-        <?php
-        if ($_SESSION["id"] == 1) {
-            ?>
-            <li class="menu"><a href="../administration">Administration</a>
-            </li>
-            <?php
-        }
-        ?>
         <li class="menu"><a href="../deconnexion">Déconnexion</a>
         </li>
     <?php } ?>

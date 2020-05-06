@@ -9,3 +9,10 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(([A-Za-z0-9\-_]+/)*[A-Za-z0-9\-_]+)?$ $1.php
+
+<FilesMatch "administration.php">
+	AuthName "Fichier autorisé uniquement pour les administrateurs du site"
+	AuthType Basic
+	AuthUserFile "/home/etudiants/www/.htpasswd"
+	Require valid-user
+</FilesMatch>
