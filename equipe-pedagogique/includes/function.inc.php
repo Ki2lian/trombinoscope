@@ -34,6 +34,7 @@ function verifName($db, $lname, $fname){
 function verifMail($db, $email){
 	$nbrLignes = file($db);
 	$fichier = fopen($db, "r+");
+	flock($fichier, LOCK_SH);
 
 	for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
 		$ligne = fgets($fichier);
@@ -44,6 +45,7 @@ function verifMail($db, $email){
 			return False;
 		}
 	}
+	flock($fichier, LOCK_UN);
 	fclose($fichier);
 	return True;
 }
@@ -83,8 +85,11 @@ function verifConnexion($db, $email, $password){
 	// Écrit dans le fichier qu'on veut avec le message qu'on veut
 function writeLogs($fichier, $message){
 	$fichier = fopen( "logs/" . $fichier, "a+");
-	$write = strftime("%d/%m/%Y à %T", time()) . ";" . mktime() . ";" . $message . "\n";
-	fputs($fichier, $write);
+	if (flock($fichier, LOCK_EX)) {
+		$write = strftime("%d/%m/%Y à %T", time()) . ";" . mktime() . ";" . $message . "\n";
+		fputs($fichier, $write);
+	    flock($fichier, LOCK_UN);
+	}
 	fclose($fichier);
 }
 
