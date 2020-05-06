@@ -44,17 +44,17 @@ if (isset($_POST["form-inscription"])) {
 
 												if ($mdp == $mdp2) {
 													$fichier = fopen($db, "a+");
-													//fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";0" . "\n");
-													fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
+													fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";0" . "\n");
+													//fputs($fichier, $id+1 . ";" . $nom . ";" . $prenom . ";" . $mail . ";" . $telephone . ";" . $filiere . ";" . $groupe . ";" . $mdp . ";" . $img . ";" . mktime() . ";" . $anniv . ";" . $key . ";1" . "\n");
 													fclose($fichier);
 													$message = "Cliquez sur ce lien pour confirmer votre inscription: https://etudiants.alwaysdata.net/confirmation.php?prenom=". urlencode($prenom) . "&nom=". urlencode($nom) ."&key=". urlencode($key) ."'
 													";
 													writeLogs($generalLog, "$nom $prenom;s'est inscrit");
-													/*mail($mail, "Confirmation d'inscription", $message);
+													mail($mail, "Confirmation d'inscription", $message);
 
-													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";*/
-													$inscriptionOK = "Votre compte a été crée, vous allez être redirigé à la page de connexion dans 3 secondes";
-													header('refresh:3;url=connexion.php');
+													$inscriptionOK = "Votre compte a été crée, vous avez reçu un mail de confirmation, veuillez cliquer sur le lien dans le mail pour poursuivre votre inscription.";
+													/*$inscriptionOK = "Votre compte a été crée, vous allez être redirigé à la page de connexion dans 3 secondes";
+													header('refresh:3;url=connexion.php');*/
 
 												}else{
 													$erreur = "Les mots de passe ne correspondent pas."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}

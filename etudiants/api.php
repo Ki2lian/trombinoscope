@@ -17,9 +17,9 @@ if (isset($_POST["form-demand-key"])) {
 						fputs($fichier, $id+1 . ";" . $key . ";" . $mdp . ";" . $mail . ";" . strftime("%H", time()) . ";0" . "\n");
 						$message = "Bonjour, vous nous avez fait la demande pour une clé d'api, vous pourrez l'utiliser en suivant la documentation en cliquant sur ce lien https://etudiants.alwaysdata.net/api. Voici votre clé: $key";
 						writeLogs($apiLog, "$mail;a demandé une clé d'API, sa clé: $key");
-						//mail($mail, "Clé d'API", $message);
-						//$inscriptionOK = "Vous avez obtenu votre clé dans votre mail.";
-						$inscriptionOK = "Votre clé: $key";
+						mail($mail, "Clé d'API", $message);
+						$inscriptionOK = "Vous avez obtenu votre clé dans votre mail en cas d'oublie.";
+						$inscriptionOK2 = "Votre clé: $key";
 					}else{
 						$erreur = "Les mots de passe ne correspondent pas."; writeLogs($erreurLog, "anonyme;$pageLog;$erreur;none");}
 				}else{
@@ -298,7 +298,8 @@ if (isset($_POST["form-recup-key"])) {
 			if (isset($erreur)) {
 				echo "<font color='#dc3545' style=\"font-weight: bold; font-size: 16px;\">". $erreur . "</font>\n";
 			}elseif (isset($inscriptionOK)) {
-				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $inscriptionOK . "</font>\n";
+				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $inscriptionOK . "</font><br/>\n";
+				echo "<font color='#28a745' style=\"font-weight: bold; font-size: 16px;\">". $inscriptionOK2 . "</font>\n";
 			}
 			?>
 			<h2>Récupérez votre clé</h2>
