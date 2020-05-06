@@ -193,7 +193,10 @@ if (isset($erreur)) {
 		var option = document.getElementById("opt-groupe");
 		var json = <?php echo $jsonTextApiFiliere; ?>;
 		var nomFiliere = document.getElementById(id).value;
-		diplayList(nomFiliere);
+		option.innerHTML = "<option selected='' disabled=''>Choisir un groupe</option>";
+		
+		diplayGroup(nomFiliere, json, option);
+		
 	}
 </script>
 

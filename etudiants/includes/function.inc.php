@@ -56,6 +56,7 @@ function verifMail($db, $email){
 		$tableau = explode(";", $ligne);
 
 		if ($tableau[3] == $email) {
+			flock($fichier, LOCK_UN);
 			fclose($fichier);
 			return False;
 		}
@@ -79,6 +80,7 @@ function verifNum($db, $num){
 
 
 		if ($tableau[4] == $num) {
+			flock($fichier, LOCK_UN);
 			fclose($fichier);
 			return False;
 		}

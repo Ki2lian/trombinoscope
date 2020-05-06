@@ -138,11 +138,26 @@ function limitationApi($dbApi, $keyURL, $max){
     }
 }
 
+function verifKey($key, $dbApi){
+    $nbrLignes = file($dbApi);
+    $fichier = fopen($dbApi, "r+");
+    flock($fichier, LOCK_SH);
+    for ($i=0; $i < sizeof($nbrLignes) ; $i++) { 
+        $ligne = fgets($fichier);
+        $tableau = explode(";", $ligne);
+        if ($tableau[1] == $key) {
+            flock($fichier, LOCK_UN);
+            fclose($fichier);
+            return 1;
+        }
+    }
+    flock($fichier, LOCK_UN);
+    fclose($fichier);
+}
 
-$key = "QTAG6uFg7Ta62PIFFRDm3Kp82kkmxVvh";
 $keyURL = $_GET["key"];
 if (isset($keyURL)) {
-    if ($keyURL == $key) {
+    if (verifKey($keyURL, $dbApi) == 1) {
         $filiereLog = $_GET["filiere"];
         $groupeLog = $_GET["groupe"];
 
@@ -151,7 +166,7 @@ if (isset($keyURL)) {
                 if (!empty($_GET["filiere"])) {
                     if (in_array($_GET["filiere"], $filiere)) {
                         $info = getAllStudentInfo( $db, $_GET["filiere"], "" );
-                        writeLogs($apiLog, "$key;1;a utilisé l'api pour voir la filière;$filiereLog;none"); // le chiffre après $key permet de savoir quelle action a été faite.
+                        writeLogs($apiLog, "$keyURL;1;a utilisé l'api pour voir la filière;$filiereLog;none"); // le chiffre après $keyURL permet de savoir quelle action a été faite.
                     }else{
                         $info = error("filiere");}  
                 }else{
@@ -161,7 +176,7 @@ if (isset($keyURL)) {
                 if (!empty($_GET["groupe"])) {
                     if (in_array($_GET["groupe"], $groupe)) {
                         $info = getAllStudentInfo( $db,"", $_GET["groupe"] );
-                        writeLogs($apiLog, "$key;2;a utilisé l'api pour voir le groupe;none;$groupeLog");
+                        writeLogs($apiLog, "$keyURL;2;a utilisé l'api pour voir le groupe;none;$groupeLog");
                     }else{
                         $info = error("groupe");}
                 }else{
@@ -172,7 +187,7 @@ if (isset($keyURL)) {
             }elseif (isset($_GET["filiere"]) && isset($_GET["groupe"])) {
                 if (!empty($_GET["filiere"]) && !empty($_GET["groupe"]) && in_array($_GET["filiere"], $filiere) && in_array($_GET["groupe"], $groupe)) {
                     $info = getAllStudentInfo( $db, $_GET["filiere"], $_GET["groupe"] );
-                    writeLogs($apiLog, "$key;3;a utilisé l'api pour voir la filière et le groupe;$filiereLog;$groupeLog");
+                    writeLogs($apiLog, "$keyURL;3;a utilisé l'api pour voir la filière et le groupe;$filiereLog;$groupeLog");
                 }else{
                     $info = error("groupeEtFiliere");}
             }
