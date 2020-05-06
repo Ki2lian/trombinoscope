@@ -78,10 +78,10 @@ if (isset($_POST["form-recup-key"])) {
 					Permet de récupérer les informations des étudiants de la filière souhaitée.
 					<h4 class="h4-doc">Appel d'API:</h4>
 						<code class="bold">
-							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere={nom de la filière}&key={votre clé d'api}
+							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere={nom de la filière}&amp;key={votre clé d'api}
 						</code>
 					<h4 class="h4-doc">Exemple d'appel d'API:</h4>
-						<a href="exemple?filiere=LPI-RIWS&key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere=LPI-RIWS</a>
+						<a href="exemple?filiere=LPI-RIWS&amp;key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere=LPI-RIWS</a>
 					<h4>Réponse d'API:</h4>
 					<pre>{
   "LPI-RIWS": {
@@ -125,10 +125,10 @@ if (isset($_POST["form-recup-key"])) {
 					Permet de récupérer les informations des étudiants du groupe souhaité.
 					<h4 class="h4-doc">Appel d'API:</h4>
 					<code class="bold">
-							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe={nom du groupe}&key={votre clé d'api}
+							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe={nom du groupe}&amp;key={votre clé d'api}
 						</code>
 					<h4 class="h4-doc">Exemple d'appel d'API:</h4>
-						<a href="exemple?groupe=B2&key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe=B2</a>
+						<a href="exemple?groupe=B2&amp;key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe=B2</a>
 					<h4>Réponse d'API:</h4>
 <pre>{
   "B2": {
@@ -222,10 +222,10 @@ if (isset($_POST["form-recup-key"])) {
 						Permet de récupérer les informations des étudiants de la filière et du groupe souhaité.
 						<h4 class="h4-doc">Appel d'API:</h4>
 					<code class="bold">
-							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe={nom du groupe}&key={votre clé d'api}
+							<?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?groupe={nom du groupe}&amp;key={votre clé d'api}
 						</code>
 					<h4 class="h4-doc">Exemple d'appel d'API:</h4>
-						<a href="exemple?filiere=L2-MIPI&groupe=C1&key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere=L2-MIPI&groupe=C1</a>
+						<a href="exemple?filiere=L2-MIPI&amp;groupe=C1&amp;key=UikPqwDB8c1SHlFAn6FoMryc3610OMbZ" target="_blank"><?php echo $protocol ?>://<?php echo $url ?>/trombinoscope?filiere=L2-MIPI&amp;groupe=C1</a>
 						<h4>Réponse d'API:</h4>
 <pre>{
   "L2-MIPI": {

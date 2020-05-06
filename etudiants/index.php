@@ -189,24 +189,14 @@ if (isset($erreur)) {
 ?>
 
 <script>
-
 	function json(id){
 		var option = document.getElementById("opt-groupe");
 		var json = <?php echo $jsonTextApiFiliere; ?>;
 		var nomFiliere = document.getElementById(id).value;
-
-		option.innerHTML = "<option selected=\"\" disabled=\"\">Choisir un groupe</option>";
-		for (var i = 0; i < json["filiere"].length; i++) {
-			if (nomFiliere == json["filiere"][i]["nom"]) {
-				break;
-			}
-		}
-		for (var j = 0; j < json["filiere"][i]["groupe"].length; j++) {
-			option.innerHTML += "<option value=" + json["filiere"][i]["groupe"][j] + ">" + json["filiere"][i]["groupe"][j] + "</option>";
-		}
-		
+		diplayList(nomFiliere);
 	}
 </script>
+
 <script src="js/script.js"></script>
 </body>
 </html>

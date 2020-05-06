@@ -48,3 +48,15 @@ function changeimg(monimage) {
          return;
          }
       }
+
+function diplayList(nomFiliere){
+  option.innerHTML = "<option selected='' disabled=''>Choisir un groupe</option>";
+  for (var i = 0; i < json["filiere"].length; i++) {
+    if (nomFiliere == json["filiere"][i]["nom"]) {
+      break;
+    }
+  }
+  for (var j = 0; j < json["filiere"][i]["groupe"].length; j++) {
+    option.innerHTML += "<option value=" + json["filiere"][i]["groupe"][j] + ">" + json["filiere"][i]["groupe"][j] + "</option>";
+  }
+}
